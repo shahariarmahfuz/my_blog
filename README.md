@@ -7,6 +7,7 @@ A production-ready Foundation Management & Financial Management System designed 
 ## 🏛️ Key Features
 
 - **Granular RBAC**: Dynamic Roles, Granular Permissions (`*.view`, `*.create`, `*.edit`, `*.delete`, `*.approve`, `*.export`), Role-Permission Matrix editor.
+- **Monthly Contributions**: Member-specific pledge amounts, multi-month prepaid advances, 4-status matrix (`PAID`, `CURRENT_PENDING`, `DUE`, `FUTURE_MONTH`), and yearly overview.
 - **Minimal Required Fields Philosophy**:
   - Groups require **only** `Group Name` (all other metadata optional).
   - Members require **only** `Name` and `Group`.
@@ -16,7 +17,7 @@ A production-ready Foundation Management & Financial Management System designed 
 - **Exact Proportional Repayment Distribution**: Repayments on Qard Hasan are automatically distributed back into original funding groups according to their funding weights with rounding protection.
 - **Audit Trail**: Detailed change history logging user, action, entity, previous values, new values, IP, and client.
 - **Executive Dashboard & Exportable Reports**: KPIs, live group balances, overdue installment alerts, recent transactions, and one-click CSV export.
-- **Firebase Hosting Ready**: Configured with `firebase.json` and client-side routing rewrites.
+- **Foundation Branding System**: Logo, favicon, Apple Touch icon, and dark/light modes.
 
 ---
 
@@ -26,10 +27,6 @@ A production-ready Foundation Management & Financial Management System designed 
 
 ```bash
 cd backend
-
-# (Optional) Activate Python environment
-python3 -m venv venv
-source venv/bin/activate
 
 # Install dependencies
 pip install fastapi uvicorn sqlalchemy psycopg2-binary pydantic pydantic-settings bcrypt pyjwt python-dateutil requests
@@ -63,7 +60,7 @@ npm run build
 
 ## 🔑 Default Credentials
 
-- **Super Admin**: `admin@foundation.org`
+- **Super Admin**: `admin`
 - **Password**: `admin123456`
 
 ---
@@ -73,5 +70,6 @@ npm run build
 Run backend automated integration test suite:
 
 ```bash
-pytest backend/tests/test_foundation_system.py -v
+pytest backend/tests -v
 ```
+

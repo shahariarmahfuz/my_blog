@@ -281,7 +281,7 @@ def get_beneficiary_report(
 
 @router.get("/export")
 def export_report_csv(
-    report_type: str = Query(..., regex="^(groups|members|beneficiaries|financial)$"),
+    report_type: str = Query(..., pattern="^(groups|members|beneficiaries|financial)$"),
     db: Session = Depends(get_db),
     current_user: User = Depends(require_permission("reports.export"))
 ):

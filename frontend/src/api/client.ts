@@ -13,8 +13,16 @@ import {
   Donation, DonationSummaryMetrics, DonationLedgerOut
 } from '../types';
 
-const rawApiUrl = (import.meta.env.VITE_API_URL || '/api/v1').trim();
-const API_BASE_URL = rawApiUrl.replace(/\/+$/, '');
+const rawApiUrl = (import.meta.env.VITE_API_URL || '/api/v1').trim().replace(/\/+$/, '');
+const API_BASE_URL = (() => {
+  if (!rawApiUrl || rawApiUrl === '/api/v1' || rawApiUrl.endsWith('/api/v1')) {
+    return rawApiUrl || '/api/v1';
+  }
+  if (rawApiUrl.endsWith('/api')) {
+    return `${rawApiUrl}/v1`;
+  }
+  return `${rawApiUrl}/api/v1`;
+})();
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -225,7 +233,7 @@ export const reportsApi = {
   exportCsvUrl: (reportType: string, params?: Record<string, string>) => {
     const searchParams = new URLSearchParams(params);
     searchParams.set('report_type', reportType);
-    return `${API_BASE_URL}/reports/export/csv?${searchParams.toString()}`;
+    return `${API_BASE_URL}/reports/export?${searchParams.toString()}`;
   },
 };
 

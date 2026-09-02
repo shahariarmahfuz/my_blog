@@ -7,30 +7,42 @@ import { Select } from '../components/ui/Select';
 import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { ActionMenu, ActionMenuItem } from '../components/ui/ActionMenu';
+import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
 import { useToast } from '../context/ToastContext';
 import { useAuth } from '../context/AuthContext';
 import {
   Users2,
   UserPlus,
   Search,
-  Building2,
-  Edit2,
   Eye,
-  Phone,
-  Mail,
+  Edit2,
   FileSpreadsheet,
   PiggyBank,
+  CheckCircle2,
+  AlertCircle,
+  Phone,
+  Calendar,
+  Building2,
+  ChevronRight,
+  Trash2
 } from 'lucide-react';
 
 export const ManageMembersPage: React.FC = () => {
   const [members, setMembers] = useState<Member[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Filters
   const [search, setSearch] = useState('');
   const [selectedGroupId, setSelectedGroupId] = useState('');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'ACTIVE' | 'INACTIVE'>('ALL');
 
-  const { error } = useToast();
+  // Delete Permanently Modal
+  const [deletingMember, setDeletingMember] = useState<Member | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [savingDelete, setSavingDelete] = useState(false);
+
+  const { success, error } = useToast();
   const { hasPermission } = useAuth();
   const navigate = useNavigate();
 
@@ -63,6 +75,24 @@ export const ManageMembersPage: React.FC = () => {
     return `৳${num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
+  const handleConfirmDelete = async () => {
+    if (!deletingMember) return;
+    setSavingDelete(true);
+    setDeleteError(null);
+    try {
+      await membersApi.delete(deletingMember.id);
+      success(`Member "${deletingMember.name}" deleted permanently.`);
+      setDeletingMember(null);
+      loadData();
+    } catch (err: any) {
+      const msg = err.response?.data?.detail || 'Failed to permanently delete member.';
+      setDeleteError(msg);
+      error(msg);
+    } finally {
+      setSavingDelete(false);
+    }
+  };
+
   const getMemberActions = (m: Member): ActionMenuItem[] => [
     {
       label: 'View Profile',
@@ -85,6 +115,15 @@ export const ManageMembersPage: React.FC = () => {
       icon: <PiggyBank className="w-3.5 h-3.5" />,
       hidden: !hasPermission('contributions.create'),
       onClick: () => navigate(`/app/contributions/add?member_id=${m.id}`),
+    },
+    {
+      label: 'Delete Permanently',
+      icon: <Trash2 className="w-3.5 h-3.5 text-rose-500" />,
+      hidden: !hasPermission('members.delete'),
+      onClick: () => {
+        setDeletingMember(m);
+        setDeleteError(null);
+      },
     },
   ];
 
@@ -298,6 +337,22 @@ export const ManageMembersPage: React.FC = () => {
           </div>
         )}
       </Card>
+
+      {/* Delete Permanently Modal */}
+      <DeleteConfirmModal
+        isOpen={!!deletingMember}
+        onClose={() => {
+          setDeletingMember(null);
+          setDeleteError(null);
+        }}
+        onConfirm={handleConfirmDelete}
+        title="Delete Member Permanently?"
+        entityName={deletingMember?.name || ''}
+        entityType="Member"
+        itemIdentifier={deletingMember?.member_code}
+        loading={savingDelete}
+        errorMessage={deleteError}
+      />
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { Member, Contribution, Group } from '../types';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
+import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
 import { useToast } from '../context/ToastContext';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -34,7 +35,8 @@ import {
   Heart,
   Droplet,
   FileCheck2,
-  AlertCircle
+  AlertCircle,
+  Trash2
 } from 'lucide-react';
 
 export const MemberProfilePage: React.FC = () => {
@@ -89,6 +91,27 @@ export const MemberProfilePage: React.FC = () => {
       error(err.response?.data?.detail || 'Failed to update member status.');
     } finally {
       setTogglingStatus(false);
+    }
+  };
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [savingDelete, setSavingDelete] = useState(false);
+
+  const handleConfirmDelete = async () => {
+    if (!member) return;
+    setSavingDelete(true);
+    setDeleteError(null);
+    try {
+      await membersApi.delete(member.id);
+      success(`Member "${member.name}" permanently deleted.`);
+      navigate('/app/members/manage');
+    } catch (err: any) {
+      const msg = err.response?.data?.detail || 'Failed to permanently delete member.';
+      setDeleteError(msg);
+      error(msg);
+    } finally {
+      setSavingDelete(false);
     }
   };
 
@@ -302,6 +325,21 @@ export const MemberProfilePage: React.FC = () => {
                 className={member.is_active ? 'text-rose-400 hover:bg-rose-950/40' : 'text-emerald-400 hover:bg-emerald-950/40'}
               >
                 {member.is_active ? 'Deactivate' : 'Activate'}
+              </Button>
+            )}
+
+            {hasPermission('members.delete') && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setShowDeleteModal(true);
+                  setDeleteError(null);
+                }}
+                className="text-rose-400 hover:text-rose-300 hover:bg-rose-950/40"
+                leftIcon={<Trash2 className="w-4 h-4 text-rose-400" />}
+              >
+                Delete Permanently
               </Button>
             )}
           </div>
@@ -760,6 +798,24 @@ export const MemberProfilePage: React.FC = () => {
           </Card>
         </div>
       </div>
+
+      {/* Delete Permanently Modal */}
+      {member && (
+        <DeleteConfirmModal
+          isOpen={showDeleteModal}
+          onClose={() => {
+            setShowDeleteModal(false);
+            setDeleteError(null);
+          }}
+          onConfirm={handleConfirmDelete}
+          title="Delete Member Permanently?"
+          entityName={member.name}
+          entityType="Member"
+          itemIdentifier={member.member_code}
+          loading={savingDelete}
+          errorMessage={deleteError}
+        />
+      )}
     </div>
   );
 };

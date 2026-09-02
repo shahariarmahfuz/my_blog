@@ -12,6 +12,8 @@ from app.models.member import Member
 from app.models.group import Group, GroupType
 from app.models.contribution import Contribution, MonthlyContributionDue
 from app.models.member_application import MemberApplication
+from app.models.file_document import FileDocument
+from app.services.cloudinary_service import CloudinaryService
 from app.schemas.member import MemberCreate, MemberUpdate, MemberOut, MemberLedgerOut, MemberLedgerEntry
 from app.schemas.contribution import ContributionOut, MonthlyContributionDueOut
 from app.services.audit_service import AuditService
@@ -477,26 +479,61 @@ def delete_member(
 ):
     member = resolve_member(db, member_id)
 
-    has_contribs = db.query(Contribution).filter(Contribution.member_id == member.id).first()
-    if has_contribs:
-        member.is_active = False
-        db.commit()
-        return {"message": "Member has contributions. Member status has been deactivated instead of deletion."}
+    # 1. Check for recorded contributions
+    contrib_count = db.query(func.count(Contribution.id)).filter(Contribution.member_id == member.id).scalar() or 0
+    if contrib_count > 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cannot permanently delete member '{member.name}': This member has {contrib_count} recorded financial contribution(s). Financial records cannot be removed to preserve accounting audit integrity."
+        )
+
+    # 2. Check if any paid dues exist
+    paid_dues_count = db.query(func.count(MonthlyContributionDue.id)).filter(
+        MonthlyContributionDue.member_id == member.id,
+        MonthlyContributionDue.paid_amount > 0
+    ).scalar() or 0
+    if paid_dues_count > 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cannot permanently delete member '{member.name}': This member has paid financial allocations on monthly dues."
+        )
+
+    # 3. Disconnect member application if linked
+    app = db.query(MemberApplication).filter(MemberApplication.created_member_id == member.id).first()
+    if app:
+        app.created_member_id = None
+
+    # 4. Clean up any uploaded file documents & Cloudinary assets
+    docs = db.query(FileDocument).filter(
+        FileDocument.entity_type == "members",
+        FileDocument.entity_id == str(member.id)
+    ).all()
+    for doc in docs:
+        if doc.cloudinary_public_id:
+            try:
+                CloudinaryService.delete_asset(doc.cloudinary_public_id, resource_type=doc.resource_type or "image")
+            except Exception:
+                pass
+        db.delete(doc)
 
     deleted_id = str(member.id)
     deleted_name = member.name
+    deleted_code = member.member_code
+
+    # 5. Delete member permanently from PostgreSQL
     db.delete(member)
     db.commit()
 
+    # 6. Audit Trail
     AuditService.log(
         db=db,
         action="DELETE",
         entity_name="members",
         entity_id=deleted_id,
-        old_values={"name": deleted_name},
+        old_values={"name": deleted_name, "member_code": deleted_code},
         user_id=current_user.id,
         ip_address=get_client_ip(request)
     )
     db.commit()
 
-    return {"message": "Member deleted successfully."}
+    return {"message": f"Member '{deleted_name}' has been permanently deleted from the database."}

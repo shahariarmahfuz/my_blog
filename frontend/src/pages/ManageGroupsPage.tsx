@@ -6,6 +6,7 @@ import { Button } from '../components/ui/Button';
 import { Input, Textarea } from '../components/ui/Input';
 import { Select } from '../components/ui/Select';
 import { Modal } from '../components/ui/Modal';
+import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
 import { Badge } from '../components/ui/Badge';
 import { Card } from '../components/ui/Card';
 import { ActionMenu, ActionMenuItem } from '../components/ui/ActionMenu';
@@ -28,7 +29,8 @@ import {
   TrendingUp,
   HandCoins,
   Receipt,
-  Scale
+  Scale,
+  Trash2
 } from 'lucide-react';
 
 export const ManageGroupsPage: React.FC = () => {
@@ -64,6 +66,11 @@ export const ManageGroupsPage: React.FC = () => {
   const [adjReason, setAdjReason] = useState('');
   const [adjEffectiveDate, setAdjEffectiveDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [savingAdj, setSavingAdj] = useState(false);
+
+  // Delete Permanently Modal
+  const [deletingGroup, setDeletingGroup] = useState<Group | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [savingDelete, setSavingDelete] = useState(false);
 
   const { success, error } = useToast();
   const { hasPermission } = useAuth();
@@ -146,6 +153,24 @@ export const ManageGroupsPage: React.FC = () => {
     }
   };
 
+  const handleConfirmDelete = async () => {
+    if (!deletingGroup) return;
+    setSavingDelete(true);
+    setDeleteError(null);
+    try {
+      await groupsApi.delete(deletingGroup.id);
+      success(`Fund Group "${deletingGroup.name}" deleted permanently.`);
+      setDeletingGroup(null);
+      loadGroups();
+    } catch (err: any) {
+      const msg = err.response?.data?.detail || 'Failed to permanently delete fund group.';
+      setDeleteError(msg);
+      error(msg);
+    } finally {
+      setSavingDelete(false);
+    }
+  };
+
   const getGroupActions = (g: Group): ActionMenuItem[] => [
     {
       label: 'Group Details',
@@ -173,6 +198,15 @@ export const ManageGroupsPage: React.FC = () => {
       icon: <Edit2 className="w-4 h-4" />,
       hidden: !hasPermission('groups.edit'),
       onClick: () => handleOpenEdit(g),
+    },
+    {
+      label: 'Delete Permanently',
+      icon: <Trash2 className="w-4 h-4 text-rose-500" />,
+      hidden: !hasPermission('groups.delete'),
+      onClick: () => {
+        setDeletingGroup(g);
+        setDeleteError(null);
+      },
     },
   ];
 
@@ -801,6 +835,22 @@ export const ManageGroupsPage: React.FC = () => {
           </div>
         </form>
       </Modal>
+
+      {/* Delete Permanently Modal */}
+      <DeleteConfirmModal
+        isOpen={!!deletingGroup}
+        onClose={() => {
+          setDeletingGroup(null);
+          setDeleteError(null);
+        }}
+        onConfirm={handleConfirmDelete}
+        title="Delete Fund Group Permanently?"
+        entityName={deletingGroup?.name || ''}
+        entityType="Fund Group"
+        itemIdentifier={deletingGroup?.code}
+        loading={savingDelete}
+        errorMessage={deleteError}
+      />
     </div>
   );
 };

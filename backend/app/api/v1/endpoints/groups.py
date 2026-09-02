@@ -15,6 +15,9 @@ from app.models.contribution import Contribution
 from app.models.assistance import AssistanceFundingAllocation, Assistance, AssistanceType
 from app.models.repayment import QardHasanRepaymentAllocation
 from app.models.ledger import LedgerEntry, FinancialTransaction, EntryType
+from app.models.donation import Donation
+from app.models.file_document import FileDocument
+from app.services.cloudinary_service import CloudinaryService
 from app.schemas.group import (
     GroupCreate, GroupUpdate, GroupOut, GroupDetailOut, GroupOpeningBalanceAdjustIn,
     GroupLedgerOut, GroupLedgerEntryOut, GroupFundOut, GroupFundAllocationEntry
@@ -503,37 +506,93 @@ def delete_group(
 ):
     group = resolve_group(db, group_id)
 
-    # Invariants checks
-    member_count = db.query(func.count(Member.id)).filter(Member.group_id == group.id).scalar()
-    if member_count and member_count > 0:
+    # 1. Invariants checks: Assigned Members
+    member_count = db.query(func.count(Member.id)).filter(Member.group_id == group.id).scalar() or 0
+    if member_count > 0:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Cannot delete group with {member_count} associated member(s). Please deactivate instead or reassign members."
+            detail=f"Cannot permanently delete fund group '{group.name}': This group has {member_count} assigned member(s). Please reassign or delete the members first."
         )
 
-    ben_count = db.query(func.count(Beneficiary.id)).filter(Beneficiary.group_id == group.id).scalar()
-    if ben_count and ben_count > 0:
+    # 2. Invariants checks: Assigned Beneficiaries
+    ben_count = db.query(func.count(Beneficiary.id)).filter(Beneficiary.group_id == group.id).scalar() or 0
+    if ben_count > 0:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Cannot delete group with {ben_count} associated beneficiary/beneficiaries. Please deactivate instead."
+            detail=f"Cannot permanently delete fund group '{group.name}': This group has {ben_count} assigned beneficiary/beneficiaries. Please reassign or delete the beneficiaries first."
         )
 
+    # 3. Invariants checks: Contributions
+    contrib_count = db.query(func.count(Contribution.id)).filter(Contribution.group_id == group.id).scalar() or 0
+    if contrib_count > 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cannot permanently delete fund group '{group.name}': This group has {contrib_count} recorded member contribution(s). Financial history cannot be deleted."
+        )
+
+    # 4. Invariants checks: External Donations
+    donation_count = db.query(func.count(Donation.id)).filter(Donation.group_id == group.id).scalar() or 0
+    if donation_count > 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cannot permanently delete fund group '{group.name}': This group has {donation_count} external donation record(s). Financial donation history cannot be deleted."
+        )
+
+    # 5. Invariants checks: Assistance Funding Allocations
+    asst_funding_count = db.query(func.count(AssistanceFundingAllocation.id)).filter(AssistanceFundingAllocation.group_id == group.id).scalar() or 0
+    if asst_funding_count > 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cannot permanently delete fund group '{group.name}': This group has funded {asst_funding_count} assistance disbursement(s). Financial history cannot be deleted."
+        )
+
+    # 6. Invariants checks: Financial Ledger Entries
+    ledger_count = db.query(func.count(LedgerEntry.id)).filter(LedgerEntry.group_id == group.id).scalar() or 0
+    if ledger_count > 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cannot permanently delete fund group '{group.name}': This group has {ledger_count} financial ledger transaction(s). Financial ledger history cannot be deleted."
+        )
+
+    # 7. Check Current Available Balance
     balance = LedgerService.get_group_balance(db, group.id)
-    if balance > Decimal("0.00"):
+    if balance != Decimal("0.00"):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Cannot delete group with a non-zero balance (৳{balance}). Please close out fund or transfer funds first."
+            detail=f"Cannot permanently delete fund group '{group.name}': Group balance is non-zero (৳{balance:,.2f}). Please close out or transfer funds first."
         )
 
+    # 8. Clean up file documents & Cloudinary assets
+    docs = db.query(FileDocument).filter(
+        FileDocument.entity_type == "groups",
+        FileDocument.entity_id == str(group.id)
+    ).all()
+    for doc in docs:
+        if doc.cloudinary_public_id:
+            try:
+                CloudinaryService.delete_asset(doc.cloudinary_public_id, resource_type=doc.resource_type or "image")
+            except Exception:
+                pass
+        db.delete(doc)
+
+    deleted_id = str(group.id)
+    deleted_name = group.name
+    deleted_code = group.code
+
+    # 9. Delete group permanently from PostgreSQL
+    db.delete(group)
+    db.commit()
+
+    # 10. Audit Trail
     AuditService.log(
         db=db,
         action="DELETE",
         entity_name="groups",
-        entity_id=str(group.id),
-        old_values={"name": group.name, "code": group.code},
+        entity_id=deleted_id,
+        old_values={"name": deleted_name, "code": deleted_code},
         user_id=current_user.id,
         ip_address=get_client_ip(request)
     )
-    db.delete(group)
     db.commit()
-    return {"message": f"Group '{group.name}' deleted successfully."}
+
+    return {"message": f"Fund Group '{deleted_name}' has been permanently deleted from the database."}

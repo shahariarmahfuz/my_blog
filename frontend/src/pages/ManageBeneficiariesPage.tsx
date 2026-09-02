@@ -6,6 +6,7 @@ import { Button } from '../components/ui/Button';
 import { Input, Textarea } from '../components/ui/Input';
 import { Select } from '../components/ui/Select';
 import { Modal } from '../components/ui/Modal';
+import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
 import { Badge } from '../components/ui/Badge';
 import { Card } from '../components/ui/Card';
 import { ActionMenu, ActionMenuItem } from '../components/ui/ActionMenu';
@@ -30,7 +31,8 @@ import {
   Paperclip,
   Camera,
   PenTool,
-  Upload
+  Upload,
+  Trash2
 } from 'lucide-react';
 
 export const ManageBeneficiariesPage: React.FC = () => {
@@ -98,6 +100,11 @@ export const ManageBeneficiariesPage: React.FC = () => {
 
   const [savingEdit, setSavingEdit] = useState(false);
 
+  // Delete Permanently Modal
+  const [deletingBen, setDeletingBen] = useState<Beneficiary | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [savingDelete, setSavingDelete] = useState(false);
+
   const editPhotoInputRef = useRef<HTMLInputElement>(null);
   const editSignatureInputRef = useRef<HTMLInputElement>(null);
   const editDocFrontInputRef = useRef<HTMLInputElement>(null);
@@ -131,6 +138,24 @@ export const ManageBeneficiariesPage: React.FC = () => {
     loadData();
   }, [search, selectedGroupId, statusFilter]);
 
+  const handleConfirmDelete = async () => {
+    if (!deletingBen) return;
+    setSavingDelete(true);
+    setDeleteError(null);
+    try {
+      await beneficiariesApi.delete(deletingBen.id);
+      success(`Beneficiary "${deletingBen.name}" deleted permanently.`);
+      setDeletingBen(null);
+      loadData();
+    } catch (err: any) {
+      const msg = err.response?.data?.detail || 'Failed to permanently delete beneficiary.';
+      setDeleteError(msg);
+      error(msg);
+    } finally {
+      setSavingDelete(false);
+    }
+  };
+
   const getBeneficiaryActions = (b: Beneficiary): ActionMenuItem[] => [
     {
       label: 'View Profile',
@@ -147,6 +172,15 @@ export const ManageBeneficiariesPage: React.FC = () => {
       icon: <Edit2 className="w-4 h-4" />,
       hidden: !hasPermission('beneficiaries.edit'),
       onClick: () => openEditModal(b),
+    },
+    {
+      label: 'Delete Permanently',
+      icon: <Trash2 className="w-4 h-4 text-rose-500" />,
+      hidden: !hasPermission('beneficiaries.delete'),
+      onClick: () => {
+        setDeletingBen(b);
+        setDeleteError(null);
+      },
     },
   ];
 
@@ -1167,6 +1201,22 @@ export const ManageBeneficiariesPage: React.FC = () => {
           </div>
         </form>
       </Modal>
+
+      {/* Delete Permanently Modal */}
+      <DeleteConfirmModal
+        isOpen={!!deletingBen}
+        onClose={() => {
+          setDeletingBen(null);
+          setDeleteError(null);
+        }}
+        onConfirm={handleConfirmDelete}
+        title="Delete Beneficiary Permanently?"
+        entityName={deletingBen?.name || ''}
+        entityType="Beneficiary"
+        itemIdentifier={deletingBen?.beneficiary_code}
+        loading={savingDelete}
+        errorMessage={deleteError}
+      />
     </div>
   );
 };

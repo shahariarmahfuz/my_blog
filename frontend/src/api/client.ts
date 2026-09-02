@@ -75,6 +75,7 @@ export const groupsApi = {
   getFund: (id: string) => apiClient.get<GroupFundOut>(`/groups/${id}/fund`),
   create: (data: any) => apiClient.post<Group>('/groups', data),
   update: (id: string, data: any) => apiClient.patch<Group>(`/groups/${id}`, data),
+  delete: (id: string) => apiClient.delete<{ message: string }>(`/groups/${id}`),
   adjustOpeningBalance: (id: string, data: { new_opening_balance: number; reason: string; effective_date?: string }) =>
     apiClient.post<Group>(`/groups/${id}/adjust-opening-balance`, data),
 };
@@ -91,6 +92,7 @@ export const membersApi = {
     apiClient.get<MemberLedgerOut>(`/members/${id}/ledger`),
   create: (data: Partial<Member>) => apiClient.post<Member>('/members', data),
   update: (id: string, data: Partial<Member>) => apiClient.patch<Member>(`/members/${id}`, data),
+  delete: (id: string) => apiClient.delete<{ message: string }>(`/members/${id}`),
 };
 
 // Public Website & Community Portal API

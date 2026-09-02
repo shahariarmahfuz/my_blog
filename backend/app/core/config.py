@@ -26,16 +26,20 @@ class Settings(BaseSettings):
 
     @property
     def BACKEND_CORS_ORIGINS(self) -> List[str]:
-        if self.CORS_ORIGINS:
-            origins = [o.strip() for o in self.CORS_ORIGINS.split(",") if o.strip()]
-            if origins:
-                return origins
-        return [
+        base_origins = [
+            "https://my-maintenance-3723e.web.app",
+            "https://my-maintenance-3723e.firebaseapp.com",
             "http://localhost:3000",
             "http://localhost:5173",
             "http://127.0.0.1:5173",
             "http://localhost:4173",
         ]
+        if self.CORS_ORIGINS:
+            custom_origins = [o.strip() for o in self.CORS_ORIGINS.split(",") if o.strip()]
+            for o in custom_origins:
+                if o not in base_origins:
+                    base_origins.append(o)
+        return base_origins
 
     model_config = SettingsConfigDict(
         env_file=os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".env")),

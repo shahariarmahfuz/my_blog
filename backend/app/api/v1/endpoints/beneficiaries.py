@@ -19,6 +19,7 @@ from app.schemas.assistance import AssistanceOut
 from app.schemas.repayment import RepaymentOut
 from app.services.audit_service import AuditService
 from app.services.id_service import IdService
+from app.services.hard_delete_service import HardDeleteService
 
 router = APIRouter()
 
@@ -468,46 +469,10 @@ def delete_beneficiary(
     current_user: User = Depends(require_permission("beneficiaries.delete"))
 ):
     ben = resolve_beneficiary(db, beneficiary_id)
-
-    # 1. Invariants check: Assistance records (Qard Hasan / Sadaqah)
-    asst_count = db.query(func.count(Assistance.id)).filter(Assistance.beneficiary_id == ben.id).scalar() or 0
-    if asst_count > 0:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Cannot permanently delete beneficiary '{ben.name}': This beneficiary has {asst_count} associated assistance record(s) (Qard Hasan / Sadaqah). Financial assistance records cannot be removed to preserve accounting history."
-        )
-
-    # 2. Clean up file documents & Cloudinary assets
-    docs = db.query(FileDocument).filter(
-        FileDocument.entity_type == "beneficiaries",
-        FileDocument.entity_id == str(ben.id)
-    ).all()
-    for doc in docs:
-        if doc.cloudinary_public_id:
-            try:
-                CloudinaryService.delete_asset(doc.cloudinary_public_id, resource_type=doc.resource_type or "image")
-            except Exception:
-                pass
-        db.delete(doc)
-
-    deleted_id = str(ben.id)
-    deleted_name = ben.name
-    deleted_code = ben.beneficiary_code
-
-    # 3. Delete beneficiary permanently
-    db.delete(ben)
-    db.commit()
-
-    # 4. Audit Trail
-    AuditService.log(
+    result = HardDeleteService.delete_beneficiary(
         db=db,
-        action="DELETE",
-        entity_name="beneficiaries",
-        entity_id=deleted_id,
-        old_values={"name": deleted_name, "beneficiary_code": deleted_code},
+        ben=ben,
         user_id=current_user.id,
         ip_address=get_client_ip(request)
     )
-    db.commit()
-
-    return {"message": f"Beneficiary '{deleted_name}' has been permanently deleted from the database."}
+    return result

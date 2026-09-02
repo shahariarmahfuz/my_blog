@@ -13,7 +13,8 @@ import {
   Donation, DonationSummaryMetrics, DonationLedgerOut
 } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
+const rawApiUrl = (import.meta.env.VITE_API_URL || '/api/v1').trim();
+const API_BASE_URL = rawApiUrl.replace(/\/+$/, '');
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,

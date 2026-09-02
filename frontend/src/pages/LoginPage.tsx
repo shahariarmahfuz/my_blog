@@ -5,7 +5,6 @@ import { useToast } from '../context/ToastContext';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import {
-  Shield,
   Lock,
   User as UserIcon,
   ArrowRight,
@@ -21,13 +20,13 @@ import { useBranding } from '../context/BrandingContext';
 
 export const LoginPage: React.FC = () => {
   const { branding } = useBranding();
-  const [username, setUsername] = useState('admin');
-  const [password, setPassword] = useState('admin123456');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);
   const { login, isAuthenticated } = useAuth();
-  const { error, success, info } = useToast();
+  const { error, success } = useToast();
   const navigate = useNavigate();
 
   // Redirect if already authenticated
@@ -36,12 +35,6 @@ export const LoginPage: React.FC = () => {
       navigate('/app/dashboard', { replace: true });
     }
   }, [isAuthenticated, navigate]);
-
-  const handleFillAdmin = () => {
-    setUsername('admin');
-    setPassword('admin123456');
-    info('Admin credentials auto-filled!');
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -154,24 +147,6 @@ export const LoginPage: React.FC = () => {
                 className="text-emerald-400 hover:underline cursor-pointer font-semibold"
               >
                 Forgot Password?
-              </span>
-            </div>
-
-            {/* Clickable Quick-Fill Demo Admin Credentials */}
-            <div
-              onClick={handleFillAdmin}
-              className="p-3 bg-slate-800/80 hover:bg-slate-800 rounded-2xl border border-slate-700/80 hover:border-emerald-500/50 text-xs text-slate-300 flex items-center justify-between cursor-pointer transition-all group"
-              title="Click to automatically fill default credentials"
-            >
-              <div className="flex items-center space-x-2.5">
-                <Shield className="w-4 h-4 text-emerald-400 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                <div>
-                  <p className="text-[10px] uppercase font-bold text-slate-400">Default Super Admin</p>
-                  <p className="font-mono text-white text-xs">admin / admin123456</p>
-                </div>
-              </div>
-              <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/80 px-2 py-1 rounded-lg border border-emerald-800/60 group-hover:bg-emerald-900 transition-colors">
-                Auto-fill
               </span>
             </div>
 

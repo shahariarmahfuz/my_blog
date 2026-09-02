@@ -120,7 +120,8 @@ export const EditMemberPage: React.FC = () => {
 
         const m = memberRes.data;
         setMember(m);
-        setGroups(groupsRes.data);
+        const memberGroups = groupsRes.data.filter(g => g.group_type !== 'EXTERNAL_FUND' || g.id === m.group_id);
+        setGroups(memberGroups);
 
         // Pre-fill all form state
         setMemberCode(m.member_code || '');

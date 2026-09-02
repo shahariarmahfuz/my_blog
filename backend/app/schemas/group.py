@@ -4,9 +4,12 @@ from datetime import datetime, date
 from decimal import Decimal
 from pydantic import BaseModel, ConfigDict, Field
 
+from app.models.group import GroupType
+
 class GroupBase(BaseModel):
     # Only Name is required
     name: str = Field(..., min_length=1, description="Group Name (Required)")
+    group_type: Optional[GroupType] = Field(GroupType.MEMBER_FUND, description="Group Type (MEMBER_FUND or EXTERNAL_FUND)")
     
     # Optional metadata
     code: Optional[str] = None
@@ -30,6 +33,7 @@ class GroupOpeningBalanceAdjustIn(BaseModel):
 
 class GroupUpdate(BaseModel):
     name: Optional[str] = None
+    group_type: Optional[GroupType] = None
     code: Optional[str] = None
     description: Optional[str] = None
     contact_person: Optional[str] = None
@@ -41,6 +45,7 @@ class GroupUpdate(BaseModel):
 
 class GroupOut(GroupBase):
     id: UUID
+    group_type: GroupType = GroupType.MEMBER_FUND
     opening_balance: Optional[Decimal] = Decimal("0.00")
     opening_balance_date: Optional[date] = None
     current_balance: Optional[Decimal] = Decimal("0.00")
@@ -54,6 +59,7 @@ class GroupOut(GroupBase):
 
 class GroupDetailOut(GroupOut):
     total_contributions: Decimal = Decimal("0.00")
+    total_donations: Decimal = Decimal("0.00")
     total_qard_hasan_funded: Decimal = Decimal("0.00")
     total_qard_hasan_repaid: Decimal = Decimal("0.00")
     total_sadaqah_funded: Decimal = Decimal("0.00")
@@ -100,9 +106,11 @@ class GroupFundOut(BaseModel):
     group_id: UUID
     group_name: str
     group_code: Optional[str] = None
+    group_type: GroupType = GroupType.MEMBER_FUND
     current_balance: Decimal
     available_balance: Decimal
     total_contributions: Decimal
+    total_donations: Decimal = Decimal("0.00")
     total_qard_hasan_funded: Decimal
     total_qard_hasan_repaid: Decimal
     total_sadaqah_funded: Decimal

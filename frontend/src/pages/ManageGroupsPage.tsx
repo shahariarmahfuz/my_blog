@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { groupsApi, membersApi, beneficiariesApi } from '../api/client';
-import { Group, Member, Beneficiary } from '../types';
+import { Group, Member, Beneficiary, GroupType } from '../types';
 import { Button } from '../components/ui/Button';
 import { Input, Textarea } from '../components/ui/Input';
+import { Select } from '../components/ui/Select';
 import { Modal } from '../components/ui/Modal';
 import { Badge } from '../components/ui/Badge';
 import { Card } from '../components/ui/Card';
@@ -46,6 +47,7 @@ export const ManageGroupsPage: React.FC = () => {
   // Edit Modal
   const [editingGroup, setEditingGroup] = useState<Group | null>(null);
   const [editName, setEditName] = useState('');
+  const [editGroupType, setEditGroupType] = useState<GroupType>('MEMBER_FUND');
   const [editCode, setEditCode] = useState('');
   const [editDescription, setEditDescription] = useState('');
   const [editContactPerson, setEditContactPerson] = useState('');
@@ -177,6 +179,7 @@ export const ManageGroupsPage: React.FC = () => {
   const handleOpenEdit = (group: Group) => {
     setEditingGroup(group);
     setEditName(group.name);
+    setEditGroupType(group.group_type || 'MEMBER_FUND');
     setEditCode(group.code || '');
     setEditDescription(group.description || '');
     setEditContactPerson(group.contact_person || '');
@@ -199,6 +202,7 @@ export const ManageGroupsPage: React.FC = () => {
     try {
       await groupsApi.update(editingGroup.id, {
         name: editName.trim(),
+        group_type: editGroupType,
         code: editCode.trim() || undefined,
         description: editDescription.trim() || undefined,
         contact_person: editContactPerson.trim() || undefined,
@@ -311,6 +315,7 @@ export const ManageGroupsPage: React.FC = () => {
               <thead className="bg-slate-50 dark:bg-slate-850 text-slate-500 dark:text-slate-400 text-[11px] uppercase font-bold border-b border-slate-200 dark:border-slate-800">
                 <tr>
                   <th className="py-2 px-3 sm:px-3.5">Group Name & Code</th>
+                  <th className="py-2 px-3 sm:px-3.5">Type</th>
                   <th className="py-2 px-3 sm:px-3.5">Members</th>
                   <th className="py-2 px-3 sm:px-3.5">Beneficiaries</th>
                   <th className="py-2 px-3 sm:px-3.5 text-right">Opening Balance</th>
@@ -327,7 +332,11 @@ export const ManageGroupsPage: React.FC = () => {
                   >
                     <td className="py-2 px-3 sm:px-3.5">
                       <div className="flex items-center space-x-2.5">
-                        <div className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-bold text-[10px] flex-shrink-0">
+                        <div className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-[10px] flex-shrink-0 ${
+                          g.group_type === 'EXTERNAL_FUND' 
+                            ? 'bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400'
+                            : 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400'
+                        }`}>
                           {g.code || g.name.substring(0, 2).toUpperCase()}
                         </div>
                         <div className="min-w-0">
@@ -339,10 +348,25 @@ export const ManageGroupsPage: React.FC = () => {
                       </div>
                     </td>
                     <td className="py-2 px-3 sm:px-3.5">
-                      <div className="flex items-center space-x-1 text-xs text-slate-600 dark:text-slate-400 font-medium">
-                        <Users2 className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
-                        <span>{g.members_count || 0} members</span>
-                      </div>
+                      {g.group_type === 'EXTERNAL_FUND' ? (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+                          External Fund
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                          Member Fund
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-2 px-3 sm:px-3.5">
+                      {g.group_type === 'EXTERNAL_FUND' ? (
+                        <span className="text-[11px] text-slate-400 italic">No Members (External)</span>
+                      ) : (
+                        <div className="flex items-center space-x-1 text-xs text-slate-600 dark:text-slate-400 font-medium">
+                          <Users2 className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                          <span>{g.members_count || 0} members</span>
+                        </div>
+                      )}
                     </td>
                     <td className="py-2 px-3 sm:px-3.5">
                       <div className="flex items-center space-x-1 text-xs text-slate-600 dark:text-slate-400 font-medium">
@@ -680,13 +704,25 @@ export const ManageGroupsPage: React.FC = () => {
         maxWidth="lg"
       >
         <form onSubmit={handleUpdateGroup} className="space-y-4">
-          <Input
-            label="Group Name *"
-            value={editName}
-            onChange={(e) => setEditName(e.target.value)}
-            required
-            autoFocus
-          />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Input
+              label="Group Name *"
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
+              required
+              autoFocus
+            />
+
+            <Select
+              label="Group Type *"
+              value={editGroupType}
+              onChange={(e) => setEditGroupType(e.target.value as GroupType)}
+              options={[
+                { value: 'MEMBER_FUND', label: 'Member Fund Group' },
+                { value: 'EXTERNAL_FUND', label: 'External Fund Group (Donations Only)' },
+              ]}
+            />
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Input

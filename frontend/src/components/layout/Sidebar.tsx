@@ -28,7 +28,8 @@ import {
   Cpu,
   Globe,
   Sparkles,
-  Calendar
+  Calendar,
+  Plus
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { BrandLogo } from '../common/BrandLogo';
@@ -66,6 +67,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed, o
     if (pathname.startsWith('/app/members')) return 'members';
     if (pathname.startsWith('/app/beneficiaries')) return 'beneficiaries';
     if (pathname.startsWith('/app/contributions')) return 'contributions';
+    if (pathname.startsWith('/app/donations')) return 'donations';
     if (pathname.startsWith('/app/assistance')) return 'assistance';
     if (pathname.startsWith('/app/settings')) return 'settings';
     return null;
@@ -225,6 +227,32 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed, o
           path: '/app/contributions/monthly-summary',
           icon: <Calendar className="w-4 h-4" />,
           permission: 'contributions.view',
+        },
+      ],
+    },
+    {
+      key: 'donations',
+      label: 'Donations',
+      icon: <HeartHandshake className="w-5 h-5 text-purple-600 dark:text-purple-400" />,
+      permission: 'donations.view',
+      children: [
+        {
+          label: 'Add Donation',
+          path: '/app/donations/add',
+          icon: <Plus className="w-4 h-4" />,
+          permission: 'donations.create',
+        },
+        {
+          label: 'Manage Donations',
+          path: '/app/donations/manage',
+          icon: <Receipt className="w-4 h-4" />,
+          permission: 'donations.view',
+        },
+        {
+          label: 'Donation Ledger',
+          path: '/app/donations/ledger',
+          icon: <FileSpreadsheet className="w-4 h-4" />,
+          permission: 'donations.view',
         },
       ],
     },

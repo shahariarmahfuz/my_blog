@@ -1,9 +1,14 @@
 import uuid
+import enum
 from datetime import datetime, timezone
-from sqlalchemy import Column, String, Text, Boolean, DateTime
+from sqlalchemy import Column, String, Text, Boolean, DateTime, Enum
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from app.core.database import Base
+
+class GroupType(str, enum.Enum):
+    MEMBER_FUND = "MEMBER_FUND"
+    EXTERNAL_FUND = "EXTERNAL_FUND"
 
 class Group(Base):
     __tablename__ = "groups"
@@ -11,6 +16,7 @@ class Group(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     # Required field
     name = Column(String(255), nullable=False, index=True)
+    group_type = Column(Enum(GroupType), default=GroupType.MEMBER_FUND, nullable=False, index=True)
     
     # Optional fields
     code = Column(String(50), unique=True, index=True, nullable=True)

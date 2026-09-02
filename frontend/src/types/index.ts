@@ -3,7 +3,64 @@ export type AssistanceStatus = 'PENDING' | 'APPROVED' | 'DISBURSED' | 'ACTIVE' |
 export type InstallmentStatus = 'PENDING' | 'PARTIALLY_PAID' | 'PAID' | 'OVERDUE';
 export type PaymentMethod = 'CASH' | 'BANK_TRANSFER' | 'CHEQUE' | 'MOBILE_BANKING' | 'OTHER';
 export type EntryType = 'CREDIT' | 'DEBIT';
-export type TransactionType = 'CONTRIBUTION' | 'QARD_HASAN_DISBURSEMENT' | 'QARD_HASAN_REPAYMENT' | 'SADAQAH_DISBURSEMENT' | 'GROUP_TRANSFER' | 'ADJUSTMENT' | 'OPENING_BALANCE' | 'OPENING_BALANCE_ADJUSTMENT';
+export type TransactionType = 'CONTRIBUTION' | 'DONATION' | 'DONATION_VOID' | 'QARD_HASAN_DISBURSEMENT' | 'QARD_HASAN_REPAYMENT' | 'SADAQAH_DISBURSEMENT' | 'GROUP_TRANSFER' | 'ADJUSTMENT' | 'OPENING_BALANCE' | 'OPENING_BALANCE_ADJUSTMENT';
+export type GroupType = 'MEMBER_FUND' | 'EXTERNAL_FUND';
+
+export interface Donation {
+  id: string;
+  receipt_number: string;
+  donor_name: string;
+  donor_phone?: string;
+  donor_email?: string;
+  donor_address?: string;
+  amount: string | number;
+  group_id: string;
+  group_name?: string;
+  group_code?: string;
+  donation_date: string;
+  purpose?: string;
+  payment_method: PaymentMethod;
+  reference_number?: string;
+  notes?: string;
+  is_voided: boolean;
+  void_reason?: string;
+  voided_at?: string;
+  voided_by?: string;
+  creator_name?: string;
+  voider_name?: string;
+  created_by?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DonationSummaryMetrics {
+  total_donations_amount: string | number;
+  total_donations_count: number;
+  this_month_amount: string | number;
+  active_funds_count: number;
+}
+
+export interface DonationLedgerEntryOut {
+  id: string;
+  receipt_number: string;
+  donation_date: string;
+  donor_name: string;
+  donor_phone?: string;
+  group_id: string;
+  group_name: string;
+  purpose?: string;
+  amount: string | number;
+  payment_method: string;
+  reference_number?: string;
+  is_voided: boolean;
+  created_at: string;
+}
+
+export interface DonationLedgerOut {
+  total_count: number;
+  total_amount: string | number;
+  entries: DonationLedgerEntryOut[];
+}
 
 export interface Permission {
   id: string;
@@ -43,6 +100,7 @@ export interface Group {
   id: string;
   name: string;
   code?: string;
+  group_type?: GroupType;
   description?: string;
   contact_person?: string;
   phone?: string;
@@ -57,6 +115,7 @@ export interface Group {
   members_count?: number;
   beneficiaries_count?: number;
   total_contributions?: string | number;
+  total_donations?: string | number;
   total_qard_hasan_funded?: string | number;
   total_qard_hasan_repaid?: string | number;
   total_sadaqah_funded?: string | number;

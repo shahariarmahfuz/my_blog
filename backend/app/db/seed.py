@@ -46,6 +46,12 @@ PERMISSIONS_DATA = [
     ("contributions.create", "Create Contribution", "contributions", "Record new member contribution"),
     ("contributions.edit", "Edit Contribution", "contributions", "Update contribution details"),
     
+    # Donations (External)
+    ("donations.view", "View Donations", "donations", "View external non-member donations"),
+    ("donations.create", "Create Donation", "donations", "Record external donation into external fund"),
+    ("donations.edit", "Edit Donation", "donations", "Update external donation details"),
+    ("donations.void", "Void Donation", "donations", "Void or reverse external donation receipts"),
+    
     # Assistance (Qard Hasan & Sadaqah)
     ("assistance.view", "View Assistance", "assistance", "View assistance applications and disbursements"),
     ("assistance.create", "Create Assistance", "assistance", "Create Qard Hasan or Sadaqah request"),

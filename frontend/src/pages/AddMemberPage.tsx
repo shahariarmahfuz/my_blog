@@ -112,9 +112,10 @@ export const AddMemberPage: React.FC = () => {
           membersApi.getNextCode().catch(() => ({ data: { next_member_code: 'M-0001' } })),
           settingsApi.getSection<ContributionSettings>('contributions').catch(() => null),
         ]);
-        setGroups(gRes.data);
-        if (gRes.data.length > 0) {
-          setGroupId(gRes.data[0].id);
+        const memberGroups = gRes.data.filter(g => g.group_type !== 'EXTERNAL_FUND');
+        setGroups(memberGroups);
+        if (memberGroups.length > 0) {
+          setGroupId(memberGroups[0].id);
         }
         if (codeRes?.data?.next_member_code) {
           setMemberCode(codeRes.data.next_member_code);

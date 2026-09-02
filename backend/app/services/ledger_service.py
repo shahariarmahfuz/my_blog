@@ -136,6 +136,72 @@ class LedgerService:
         return txn
 
     @staticmethod
+    def record_donation_ledger(db: Session, donation: "Donation", user_id: Optional[UUID] = None) -> FinancialTransaction:
+        """
+        Records an external donation in the financial transaction ledger and creates a CREDIT entry for the external fund group.
+        """
+        txn_code = LedgerService._get_unique_transaction_code(db, f"TXN-{donation.receipt_number}")
+        txn = FinancialTransaction(
+            transaction_code=txn_code,
+            transaction_type=TransactionType.DONATION,
+            source_entity_type="donations",
+            source_entity_id=donation.id,
+            amount=donation.amount,
+            transaction_date=donation.donation_date,
+            description=f"External Donation {donation.receipt_number} from {donation.donor_name} ({donation.purpose or 'General'})",
+            created_by=user_id
+        )
+        db.add(txn)
+        db.flush()
+        
+        current_bal = LedgerService.get_group_balance(db, donation.group_id)
+        new_bal = current_bal + donation.amount
+        
+        entry = LedgerEntry(
+            transaction_id=txn.id,
+            group_id=donation.group_id,
+            entry_type=EntryType.CREDIT,
+            amount=donation.amount,
+            balance_after=new_bal,
+            notes=f"External donation from {donation.donor_name}. Ref: {donation.reference_number or 'N/A'}"
+        )
+        db.add(entry)
+        return txn
+
+    @staticmethod
+    def record_donation_reversal_ledger(db: Session, donation: "Donation", reason: str, user_id: Optional[UUID] = None) -> FinancialTransaction:
+        """
+        Creates a reversing DEBIT ledger entry for a voided external donation, reducing the group's balance.
+        """
+        txn_code = LedgerService._get_unique_transaction_code(db, f"TXN-REV-{donation.receipt_number}")
+        txn = FinancialTransaction(
+            transaction_code=txn_code,
+            transaction_type=TransactionType.DONATION_VOID,
+            source_entity_type="donations_reversal",
+            source_entity_id=donation.id,
+            amount=donation.amount,
+            transaction_date=date.today(),
+            description=f"Reversal / Void for External Donation {donation.receipt_number} ({donation.donor_name}). Reason: {reason}",
+            created_by=user_id
+        )
+        db.add(txn)
+        db.flush()
+
+        current_bal = LedgerService.get_group_balance(db, donation.group_id)
+        new_bal = current_bal - donation.amount
+
+        entry = LedgerEntry(
+            transaction_id=txn.id,
+            group_id=donation.group_id,
+            entry_type=EntryType.DEBIT,
+            amount=donation.amount,
+            balance_after=new_bal,
+            notes=f"Void/Reversal for External Donation {donation.receipt_number}: {reason}"
+        )
+        db.add(entry)
+        return txn
+
+    @staticmethod
     def record_assistance_disbursement_ledger(db: Session, assistance: Assistance, user_id: Optional[UUID] = None) -> FinancialTransaction:
         """
         Records an assistance disbursement (Qard Hasan or Sadaqah) in the financial ledger
@@ -273,6 +339,59 @@ class LedgerService:
         ).group_by(LedgerEntry.group_id).all()
         
         return {row.group_id: Decimal(str(row.opening_balance)) for row in results}
+
+    @staticmethod
+    def get_group_total_donations(db: Session, group_id: UUID) -> Decimal:
+        """
+        Calculates net external donations received for a group:
+        Sum(CREDIT of DONATION) - Sum(DEBIT of DONATION_VOID)
+        """
+        result = db.query(
+            func.coalesce(
+                func.sum(
+                    case(
+                        (LedgerEntry.entry_type == EntryType.CREDIT, LedgerEntry.amount),
+                        (LedgerEntry.entry_type == EntryType.DEBIT, -LedgerEntry.amount),
+                        else_=Decimal("0.00")
+                    )
+                ),
+                Decimal("0.00")
+            )
+        ).join(FinancialTransaction, FinancialTransaction.id == LedgerEntry.transaction_id)\
+        .filter(
+            LedgerEntry.group_id == group_id,
+            FinancialTransaction.transaction_type.in_([
+                TransactionType.DONATION,
+                TransactionType.DONATION_VOID
+            ])
+        ).scalar()
+        return Decimal(str(result or 0.00))
+
+    @staticmethod
+    def get_all_group_donations(db: Session) -> Dict[UUID, Decimal]:
+        """
+        Returns a mapping of {group_id: total_donations} for all groups from the ledger.
+        """
+        results = db.query(
+            LedgerEntry.group_id,
+            func.coalesce(
+                func.sum(
+                    case(
+                        (LedgerEntry.entry_type == EntryType.CREDIT, LedgerEntry.amount),
+                        (LedgerEntry.entry_type == EntryType.DEBIT, -LedgerEntry.amount),
+                        else_=Decimal("0.00")
+                    )
+                ),
+                Decimal("0.00")
+            ).label("total_donations")
+        ).join(FinancialTransaction, FinancialTransaction.id == LedgerEntry.transaction_id)\
+        .filter(
+            FinancialTransaction.transaction_type.in_([
+                TransactionType.DONATION,
+                TransactionType.DONATION_VOID
+            ])
+        ).group_by(LedgerEntry.group_id).all()
+        return {row.group_id: Decimal(str(row.total_donations)) for row in results}
 
     @staticmethod
     def record_opening_balance_ledger(

@@ -8,7 +8,7 @@ from sqlalchemy import func
 from app.core.database import get_db
 from app.core.dependencies import get_current_user, require_permission, get_client_ip
 from app.models.user import User
-from app.models.group import Group
+from app.models.group import Group, GroupType
 from app.models.member import Member
 from app.models.beneficiary import Beneficiary
 from app.models.contribution import Contribution
@@ -132,6 +132,7 @@ def get_group_details(
     out.opening_balance = opening_balance
     out.available_balance = balance
     out.total_contributions = Decimal(str(total_contrib or 0))
+    out.total_donations = LedgerService.get_group_total_donations(db, group.id)
     out.total_qard_hasan_funded = Decimal(str(total_qh_funded or 0))
     out.total_qard_hasan_repaid = Decimal(str(total_qh_repaid or 0))
     out.total_sadaqah_funded = Decimal(str(total_sd_funded or 0))
@@ -270,9 +271,11 @@ def get_group_fund(
         group_id=group.id,
         group_name=group.name,
         group_code=group.code,
+        group_type=group.group_type,
         current_balance=balance,
         available_balance=balance,
         total_contributions=Decimal(str(total_contrib or 0)),
+        total_donations=LedgerService.get_group_total_donations(db, group.id),
         total_qard_hasan_funded=qh_funded_dec,
         total_qard_hasan_repaid=qh_repaid_dec,
         total_sadaqah_funded=Decimal(str(total_sd_funded or 0)),
@@ -303,6 +306,7 @@ def create_group(
     group = Group(
         name=name_clean,
         code=code_clean,
+        group_type=group_in.group_type or GroupType.MEMBER_FUND,
         description=group_in.description,
         contact_person=group_in.contact_person,
         phone=group_in.phone,
@@ -443,6 +447,16 @@ def update_group(
             if existing:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Group Code '{code_clean}' already exists.")
             group.code = code_clean
+
+    if group_in.group_type is not None and group_in.group_type != group.group_type:
+        if group_in.group_type == GroupType.EXTERNAL_FUND:
+            members_cnt = db.query(Member).filter(Member.group_id == group.id).count()
+            if members_cnt > 0:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Cannot convert group to External Fund Group: {members_cnt} members are currently assigned to this group. Reassign or remove members first."
+                )
+        group.group_type = group_in.group_type
 
     if group_in.description is not None:
         group.description = group_in.description

@@ -37,6 +37,13 @@ import { ManageContributionsPage } from './pages/ManageContributionsPage';
 import { DueContributionsPage } from './pages/DueContributionsPage';
 import { ContributionLedgerPage } from './pages/ContributionLedgerPage';
 import { MonthlySummaryPage } from './pages/MonthlySummaryPage';
+
+// External Donation Pages
+import { AddDonationPage } from './pages/donations/AddDonationPage';
+import { ManageDonationsPage } from './pages/donations/ManageDonationsPage';
+import { DonationDetailPage } from './pages/donations/DonationDetailPage';
+import { EditDonationPage } from './pages/donations/EditDonationPage';
+import { DonationLedgerPage } from './pages/donations/DonationLedgerPage';
 import { AddQardHasanPage } from './pages/AddQardHasanPage';
 import { ManageQardHasanPage } from './pages/ManageQardHasanPage';
 import { QardHasanLedgerPage } from './pages/QardHasanLedgerPage';
@@ -142,6 +149,14 @@ export const App: React.FC = () => {
                 <Route path="contributions/due" element={<DueContributionsPage />} />
                 <Route path="contributions/ledger" element={<ContributionLedgerPage />} />
                 <Route path="contributions/monthly-summary" element={<MonthlySummaryPage />} />
+
+                {/* External Donations */}
+                <Route path="donations" element={<ManageDonationsPage />} />
+                <Route path="donations/add" element={<AddDonationPage />} />
+                <Route path="donations/manage" element={<ManageDonationsPage />} />
+                <Route path="donations/ledger" element={<DonationLedgerPage />} />
+                <Route path="donations/:id" element={<DonationDetailPage />} />
+                <Route path="donations/:id/edit" element={<EditDonationPage />} />
 
                 {/* Assistance */}
                 <Route path="assistance" element={<ManageQardHasanPage />} />

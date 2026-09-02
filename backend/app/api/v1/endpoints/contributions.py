@@ -11,7 +11,7 @@ from app.core.dependencies import get_current_user, require_permission, get_clie
 from app.models.user import User
 from app.models.contribution import Contribution, MonthlyContributionDue, DueStatus
 from app.models.member import Member
-from app.models.group import Group
+from app.models.group import Group, GroupType
 from app.models.ledger import FinancialTransaction, LedgerEntry
 from app.schemas.contribution import (
     ContributionCreate, ContributionUpdate, ContributionOut,
@@ -476,6 +476,11 @@ def create_contribution(
     group = db.query(Group).filter(Group.id == group_id).first()
     if not group:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Member's assigned fund Group does not exist.")
+    if group.group_type == GroupType.EXTERNAL_FUND:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Member contributions cannot be deposited into an External Fund Group. '{group.name}' is designated for external donations only."
+        )
 
     if contrib_in.amount <= Decimal("0.00"):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Contribution amount must be greater than 0.")

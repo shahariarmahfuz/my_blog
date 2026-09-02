@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { groupsApi } from '../api/client';
+import { GroupType } from '../types';
 import { Button } from '../components/ui/Button';
 import { Input, Textarea } from '../components/ui/Input';
+import { Select } from '../components/ui/Select';
 import { Card } from '../components/ui/Card';
 import { useToast } from '../context/ToastContext';
 import {
@@ -13,11 +15,14 @@ import {
   Info,
   FileSpreadsheet,
   Wallet,
-  Calendar
+  Calendar,
+  Users2,
+  HeartHandshake
 } from 'lucide-react';
 
 export const AddGroupPage: React.FC = () => {
   const [name, setName] = useState('');
+  const [groupType, setGroupType] = useState<GroupType>('MEMBER_FUND');
   const [code, setCode] = useState('');
   const [openingBalance, setOpeningBalance] = useState('');
   const [openingBalanceDate, setOpeningBalanceDate] = useState(() => new Date().toISOString().split('T')[0]);
@@ -31,6 +36,7 @@ export const AddGroupPage: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [createdGroupId, setCreatedGroupId] = useState<string | null>(null);
   const [createdGroupName, setCreatedGroupName] = useState<string>('');
+  const [createdGroupType, setCreatedGroupType] = useState<GroupType>('MEMBER_FUND');
   const [createdOpeningBalance, setCreatedOpeningBalance] = useState<number>(0);
 
   const { success, error } = useToast();
@@ -38,6 +44,7 @@ export const AddGroupPage: React.FC = () => {
 
   const handleReset = () => {
     setName('');
+    setGroupType('MEMBER_FUND');
     setCode('');
     setOpeningBalance('');
     setOpeningBalanceDate(new Date().toISOString().split('T')[0]);
@@ -50,6 +57,7 @@ export const AddGroupPage: React.FC = () => {
     setNotes('');
     setCreatedGroupId(null);
     setCreatedGroupName('');
+    setCreatedGroupType('MEMBER_FUND');
     setCreatedOpeningBalance(0);
   };
 
@@ -70,6 +78,7 @@ export const AddGroupPage: React.FC = () => {
     try {
       const res = await groupsApi.create({
         name: name.trim(),
+        group_type: groupType,
         code: code.trim() || undefined,
         opening_balance: opBalNum > 0 ? opBalNum : undefined,
         opening_balance_date: opBalNum > 0 ? (openingBalanceDate || undefined) : undefined,
@@ -86,6 +95,7 @@ export const AddGroupPage: React.FC = () => {
       success(`Fund Group "${name}" created successfully!`);
       setCreatedGroupId(res.data.id);
       setCreatedGroupName(res.data.name);
+      setCreatedGroupType(groupType);
       setCreatedOpeningBalance(opBalNum);
     } catch (err: any) {
       const msg = err.response?.data?.detail || 'Failed to create fund group.';
@@ -127,12 +137,14 @@ export const AddGroupPage: React.FC = () => {
             </div>
             <div>
               <h4 className="font-bold text-emerald-950 dark:text-emerald-200 text-sm">
-                Fund Group "{createdGroupName}" Created Successfully!
+                Fund Group "{createdGroupName}" ({createdGroupType === 'EXTERNAL_FUND' ? 'External Fund' : 'Member Fund'}) Created Successfully!
               </h4>
               <p className="text-xs text-emerald-700 dark:text-emerald-400 mt-0.5">
                 {createdOpeningBalance > 0
                   ? `Initial Opening Balance of ৳${createdOpeningBalance.toLocaleString()} recorded in the double-entry ledger.`
-                  : 'Ready to receive member contributions and disburse assistance.'}
+                  : (createdGroupType === 'EXTERNAL_FUND' 
+                      ? 'Ready to receive external non-member donations and disburse assistance.'
+                      : 'Ready to receive member contributions and disburse assistance.')}
               </p>
             </div>
           </div>
@@ -177,7 +189,7 @@ export const AddGroupPage: React.FC = () => {
               <div className="sm:col-span-2">
                 <Input
                   label="Group Name *"
-                  placeholder="e.g. General Welfare Fund, Education Aid Circle"
+                  placeholder="e.g. General Welfare Fund, General Donation Fund"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
@@ -185,6 +197,23 @@ export const AddGroupPage: React.FC = () => {
                 />
                 <p className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 font-medium">
                   * Required: Unique identifier for this accounting/fund group
+                </p>
+              </div>
+
+              <div>
+                <Select
+                  label="Group Type *"
+                  value={groupType}
+                  onChange={(e) => setGroupType(e.target.value as GroupType)}
+                  options={[
+                    { value: 'MEMBER_FUND', label: 'Member Fund Group (Members & Monthly Dues)' },
+                    { value: 'EXTERNAL_FUND', label: 'External Fund Group (External Donations Only)' },
+                  ]}
+                />
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                  {groupType === 'MEMBER_FUND'
+                    ? 'Allows member assignments and recurring monthly contributions.'
+                    : 'Disables member assignment; receives external non-member donations.'}
                 </p>
               </div>
 

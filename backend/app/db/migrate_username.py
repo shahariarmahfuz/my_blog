@@ -94,10 +94,54 @@ def migrate_users_table():
 
     with engine.connect().execution_options(isolation_level="AUTOCOMMIT") as conn:
         try:
+            conn.execute(text("DO $$ BEGIN CREATE TYPE grouptype AS ENUM ('MEMBER_FUND', 'EXTERNAL_FUND'); EXCEPTION WHEN duplicate_object THEN null; END $$;"))
+        except Exception as e:
+            print("GroupType enum migration note:", e)
+        try:
             conn.execute(text("ALTER TYPE transactiontype ADD VALUE IF NOT EXISTS 'OPENING_BALANCE'"))
             conn.execute(text("ALTER TYPE transactiontype ADD VALUE IF NOT EXISTS 'OPENING_BALANCE_ADJUSTMENT'"))
+            conn.execute(text("ALTER TYPE transactiontype ADD VALUE IF NOT EXISTS 'DONATION'"))
+            conn.execute(text("ALTER TYPE transactiontype ADD VALUE IF NOT EXISTS 'DONATION_VOID'"))
         except Exception as e:
             print("Enum migration note:", e)
+
+    with engine.begin() as conn:
+        # 7. Group Type column migration
+        conn.execute(text("""
+            ALTER TABLE groups ADD COLUMN IF NOT EXISTS group_type grouptype NOT NULL DEFAULT 'MEMBER_FUND';
+            CREATE INDEX IF NOT EXISTS ix_groups_group_type ON groups (group_type);
+        """))
+
+        # 8. Donations table migration
+        conn.execute(text("""
+            CREATE TABLE IF NOT EXISTS donations (
+                id UUID PRIMARY KEY,
+                receipt_number VARCHAR(50) UNIQUE NOT NULL,
+                donor_name VARCHAR(255) NOT NULL,
+                donor_phone VARCHAR(50),
+                donor_email VARCHAR(255),
+                donor_address TEXT,
+                amount NUMERIC(14, 2) NOT NULL,
+                group_id UUID NOT NULL REFERENCES groups(id) ON DELETE RESTRICT,
+                donation_date DATE NOT NULL,
+                purpose VARCHAR(255) DEFAULT 'General Donation',
+                payment_method paymentmethod NOT NULL DEFAULT 'CASH',
+                reference_number VARCHAR(100),
+                notes TEXT,
+                is_voided BOOLEAN NOT NULL DEFAULT FALSE,
+                void_reason TEXT,
+                voided_at TIMESTAMP WITH TIME ZONE,
+                voided_by UUID REFERENCES users(id) ON DELETE SET NULL,
+                created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+                updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+            );
+            CREATE INDEX IF NOT EXISTS ix_donations_receipt_number ON donations (receipt_number);
+            CREATE INDEX IF NOT EXISTS ix_donations_donor_name ON donations (donor_name);
+            CREATE INDEX IF NOT EXISTS ix_donations_donor_phone ON donations (donor_phone);
+            CREATE INDEX IF NOT EXISTS ix_donations_group_id ON donations (group_id);
+            CREATE INDEX IF NOT EXISTS ix_donations_donation_date ON donations (donation_date);
+        """))
         
     print("Migration completed successfully!")
 

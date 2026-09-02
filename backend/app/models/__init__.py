@@ -1,7 +1,8 @@
 from app.core.database import Base
 from app.models.rbac import Role, Permission, RolePermission
 from app.models.user import User
-from app.models.group import Group
+from app.models.group import Group, GroupType
+from app.models.donation import Donation
 from app.models.member import Member
 from app.models.member_application import MemberApplication, MemberApplicationStatusHistory
 from app.models.beneficiary import Beneficiary
@@ -21,6 +22,8 @@ __all__ = [
     "RolePermission",
     "User",
     "Group",
+    "GroupType",
+    "Donation",
     "Member",
     "MemberApplication",
     "MemberApplicationStatusHistory",

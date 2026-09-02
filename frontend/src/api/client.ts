@@ -9,7 +9,8 @@ import {
   MonthlyContributionSummaryOut, GenerateDuesResponse, ContributionLedgerOut, Assistance,
   QardHasanLedgerOut, SadaqahLedgerOut, Repayment, DashboardMetrics, AuditLog, User, Role,
   Permission, RepaymentPreview, AllSettings, SettingSectionResponse, MemberMonthsScheduleResponse,
-  BrandingSettingsOut, PublicBrandingOut, YearlyMonthlySummaryResponse
+  BrandingSettingsOut, PublicBrandingOut, YearlyMonthlySummaryResponse,
+  Donation, DonationSummaryMetrics, DonationLedgerOut
 } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
@@ -170,6 +171,19 @@ export const contributionsApi = {
     apiClient.post<Contribution>(`/contributions/${id}/void`, data),
   update: (id: string, data: Partial<Contribution>) =>
     apiClient.patch<Contribution>(`/contributions/${id}`, data),
+};
+
+// External Donations API
+export const donationsApi = {
+  list: (params?: { skip?: number; limit?: number; group_id?: string; from_date?: string; to_date?: string; min_amount?: number; max_amount?: number; is_voided?: boolean; search?: string }) =>
+    apiClient.get<Donation[]>('/donations', { params }),
+  get: (id: string) => apiClient.get<Donation>(`/donations/${id}`),
+  create: (data: any) => apiClient.post<Donation>('/donations', data),
+  update: (id: string, data: Partial<Donation>) => apiClient.patch<Donation>(`/donations/${id}`, data),
+  void: (id: string, data: { reason: string }) => apiClient.post<Donation>(`/donations/${id}/void`, data),
+  getMetrics: () => apiClient.get<DonationSummaryMetrics>('/donations/metrics'),
+  getLedger: (params?: { group_id?: string; from_date?: string; to_date?: string }) =>
+    apiClient.get<DonationLedgerOut>('/donations/ledger', { params }),
 };
 
 // Assistance API (Qard Hasan & Sadaqah)

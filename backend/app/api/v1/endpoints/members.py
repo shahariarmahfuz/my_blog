@@ -9,7 +9,7 @@ from app.core.database import get_db
 from app.core.dependencies import get_current_user, require_permission, get_client_ip
 from app.models.user import User
 from app.models.member import Member
-from app.models.group import Group
+from app.models.group import Group, GroupType
 from app.models.contribution import Contribution, MonthlyContributionDue
 from app.models.member_application import MemberApplication
 from app.schemas.member import MemberCreate, MemberUpdate, MemberOut, MemberLedgerOut, MemberLedgerEntry
@@ -289,6 +289,11 @@ def create_member(
     group = db.query(Group).filter(Group.id == member_in.group_id).first()
     if not group:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Assigned Group does not exist.")
+    if group.group_type == GroupType.EXTERNAL_FUND:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Members cannot be assigned to an External Fund Group. '{group.name}' is designated for external donations only."
+        )
 
     name_clean = member_in.name.strip()
     if not name_clean:
@@ -407,6 +412,11 @@ def update_member(
         group = db.query(Group).filter(Group.id == member_in.group_id).first()
         if not group:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Target group does not exist.")
+        if group.group_type == GroupType.EXTERNAL_FUND:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Members cannot be assigned to an External Fund Group. '{group.name}' is designated for external donations only."
+            )
         member.group_id = member_in.group_id
 
     if member_in.member_code is not None:

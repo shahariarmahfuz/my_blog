@@ -23,8 +23,6 @@ import {
   Users2,
   HeartHandshake,
   Wallet,
-  Phone,
-  Mail,
   MapPin,
   TrendingUp,
   HandCoins,
@@ -52,9 +50,6 @@ export const ManageGroupsPage: React.FC = () => {
   const [editGroupType, setEditGroupType] = useState<GroupType>('MEMBER_FUND');
   const [editCode, setEditCode] = useState('');
   const [editDescription, setEditDescription] = useState('');
-  const [editContactPerson, setEditContactPerson] = useState('');
-  const [editPhone, setEditPhone] = useState('');
-  const [editEmail, setEditEmail] = useState('');
   const [editAddress, setEditAddress] = useState('');
   const [editNotes, setEditNotes] = useState('');
   const [editIsActive, setEditIsActive] = useState(true);
@@ -216,9 +211,6 @@ export const ManageGroupsPage: React.FC = () => {
     setEditGroupType(group.group_type || 'MEMBER_FUND');
     setEditCode(group.code || '');
     setEditDescription(group.description || '');
-    setEditContactPerson(group.contact_person || '');
-    setEditPhone(group.phone || '');
-    setEditEmail(group.email || '');
     setEditAddress(group.address || '');
     setEditNotes(group.notes || '');
     setEditIsActive(group.is_active);
@@ -239,9 +231,6 @@ export const ManageGroupsPage: React.FC = () => {
         group_type: editGroupType,
         code: editCode.trim() || undefined,
         description: editDescription.trim() || undefined,
-        contact_person: editContactPerson.trim() || undefined,
-        phone: editPhone.trim() || undefined,
-        email: editEmail.trim() || undefined,
         address: editAddress.trim() || undefined,
         notes: editNotes.trim() || undefined,
         is_active: editIsActive,
@@ -375,9 +364,6 @@ export const ManageGroupsPage: React.FC = () => {
                         </div>
                         <div className="min-w-0">
                           <p className="font-bold text-slate-900 dark:text-white leading-tight text-xs truncate max-w-[160px]">{g.name}</p>
-                          {g.contact_person && (
-                            <p className="text-[10px] text-slate-400 truncate max-w-[120px]">Contact: {g.contact_person}</p>
-                          )}
                         </div>
                       </div>
                     </td>
@@ -575,18 +561,6 @@ export const ManageGroupsPage: React.FC = () => {
                   <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">{formatCurrency(selectedGroup?.opening_balance)}</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
-                  <span className="text-slate-400">Contact Person:</span>
-                  <span className="font-semibold text-slate-900 dark:text-white">{selectedGroup?.contact_person || 'N/A'}</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
-                  <span className="text-slate-400">Phone:</span>
-                  <span className="font-semibold text-slate-900 dark:text-white">{selectedGroup?.phone || 'N/A'}</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
-                  <span className="text-slate-400">Email:</span>
-                  <span className="text-slate-900 dark:text-white">{selectedGroup?.email || 'N/A'}</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
                   <span className="text-slate-400">Address:</span>
                   <span className="text-slate-900 dark:text-white">{selectedGroup?.address || 'N/A'}</span>
                 </div>
@@ -758,33 +732,12 @@ export const ManageGroupsPage: React.FC = () => {
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <Input
-              label="Group Code / ID (Editable)"
-              placeholder="e.g. GRP-001 or EDU-FUND"
-              value={editCode}
-              onChange={(e) => setEditCode(e.target.value)}
-            />
-            <Input
-              label="Contact Person (Optional)"
-              value={editContactPerson}
-              onChange={(e) => setEditContactPerson(e.target.value)}
-            />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <Input
-              label="Phone Number (Optional)"
-              value={editPhone}
-              onChange={(e) => setEditPhone(e.target.value)}
-            />
-            <Input
-              label="Email Address (Optional)"
-              type="email"
-              value={editEmail}
-              onChange={(e) => setEditEmail(e.target.value)}
-            />
-          </div>
+          <Input
+            label="Group Code / ID (Editable)"
+            placeholder="e.g. GRP-001 or EDU-FUND"
+            value={editCode}
+            onChange={(e) => setEditCode(e.target.value)}
+          />
 
           <Input
             label="Physical Address (Optional)"

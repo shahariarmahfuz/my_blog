@@ -12,12 +12,8 @@ import {
   Building2,
   CheckCircle2,
   ArrowRight,
-  Info,
   FileSpreadsheet,
-  Wallet,
-  Calendar,
-  Users2,
-  HeartHandshake
+  Wallet
 } from 'lucide-react';
 
 export const AddGroupPage: React.FC = () => {
@@ -28,9 +24,6 @@ export const AddGroupPage: React.FC = () => {
   const [openingBalanceDate, setOpeningBalanceDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [openingBalanceNotes, setOpeningBalanceNotes] = useState('');
   const [description, setDescription] = useState('');
-  const [contactPerson, setContactPerson] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
   const [notes, setNotes] = useState('');
   const [saving, setSaving] = useState(false);
@@ -50,9 +43,6 @@ export const AddGroupPage: React.FC = () => {
     setOpeningBalanceDate(new Date().toISOString().split('T')[0]);
     setOpeningBalanceNotes('');
     setDescription('');
-    setContactPerson('');
-    setPhone('');
-    setEmail('');
     setAddress('');
     setNotes('');
     setCreatedGroupId(null);
@@ -84,9 +74,6 @@ export const AddGroupPage: React.FC = () => {
         opening_balance_date: opBalNum > 0 ? (openingBalanceDate || undefined) : undefined,
         opening_balance_notes: openingBalanceNotes.trim() || undefined,
         description: description.trim() || undefined,
-        contact_person: contactPerson.trim() || undefined,
-        phone: phone.trim() || undefined,
-        email: email.trim() || undefined,
         address: address.trim() || undefined,
         notes: notes.trim() || undefined,
         is_active: true,
@@ -260,29 +247,6 @@ export const AddGroupPage: React.FC = () => {
                   </div>
                 </div>
               </div>
-
-              <Input
-                label="Contact Person / Focal Point (Optional)"
-                placeholder="e.g. Brother Hasan Ali"
-                value={contactPerson}
-                onChange={(e) => setContactPerson(e.target.value)}
-              />
-
-              <Input
-                label="Phone Number (Optional)"
-                type="tel"
-                placeholder="e.g. +8801712345678"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
-
-              <Input
-                label="Email Address (Optional)"
-                type="email"
-                placeholder="group@foundation.org"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
 
               <div className="sm:col-span-2">
                 <Input

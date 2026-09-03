@@ -214,34 +214,21 @@ export const AddContributionPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-5 pb-12">
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
-            <PiggyBank className="w-7 h-7 text-emerald-500" />
-            <span>Add Member Contribution</span>
-          </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Record a monthly contribution payment. Select one or multiple months in a single payment.
-          </p>
-        </div>
-
-        <Button
-          variant="outline"
-          onClick={() => navigate('/app/contributions/manage')}
-          leftIcon={<FileSpreadsheet className="w-4 h-4" />}
-        >
-          View All Contributions
-        </Button>
+      <div>
+        <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
+          <PiggyBank className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-500 dark:text-indigo-400" />
+          <span>Add Member Contribution</span>
+        </h1>
       </div>
 
       {/* Success Notification Banner */}
       {createdReceipt && (
-        <div className="p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fadeIn">
+        <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-fadeIn">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center text-white flex-shrink-0 shadow-md shadow-emerald-500/30">
-              <CheckCircle2 className="w-6 h-6" />
+            <div className="w-9 h-9 rounded-full bg-emerald-500 flex items-center justify-center text-white flex-shrink-0 shadow-md shadow-emerald-500/30">
+              <CheckCircle2 className="w-5 h-5" />
             </div>
             <div>
               <h4 className="font-bold text-emerald-950 dark:text-emerald-200 text-sm">
@@ -256,7 +243,7 @@ export const AddContributionPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 flex-shrink-0">
             <Button
               size="sm"
               variant="outline"
@@ -270,18 +257,15 @@ export const AddContributionPage: React.FC = () => {
               onClick={() => navigate(`/app/members/ledger?member_id=${createdMemberId}`)}
               rightIcon={<ArrowRight className="w-3.5 h-3.5" />}
             >
-              View Member Ledger
+              Member Ledger
             </Button>
           </div>
         </div>
       )}
 
       {/* Contribution Form Card */}
-      <Card
-        title="Contribution Intake Form"
-        subtitle="Select the contributing member, choose the month(s) to pay, and submit. The double-entry ledger credits the group ONCE for the total amount."
-      >
-        <form onSubmit={handleSubmit} className="space-y-6">
+      <Card title="Contribution Intake Form">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
@@ -304,9 +288,6 @@ export const AddContributionPage: React.FC = () => {
                     ))
                   )}
                 </Select>
-                <p className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 font-medium">
-                  * Required: Member determines fund group allocation
-                </p>
               </div>
 
               <div>
@@ -320,12 +301,6 @@ export const AddContributionPage: React.FC = () => {
                   onChange={(e) => setAmount(e.target.value)}
                   required
                 />
-                <p className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 font-medium">
-                  {selectedMonths.length > 1
-                    ? `Auto-calculated: ${selectedMonths.length} months × ৳${monthlyPledge.toLocaleString()}`
-                    : '* Required: Amount credited to group fund'
-                  }
-                </p>
               </div>
             </div>
 
@@ -379,7 +354,6 @@ export const AddContributionPage: React.FC = () => {
                   value={contributionDate}
                   onChange={(e) => setContributionDate(e.target.value)}
                 />
-                <p className="text-[10px] text-slate-400 mt-1">Date funds were received</p>
               </div>
 
               <div>

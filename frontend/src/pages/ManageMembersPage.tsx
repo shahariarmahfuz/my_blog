@@ -132,13 +132,10 @@ export const ManageMembersPage: React.FC = () => {
       {/* Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center space-x-2">
-            <Users2 className="w-6 h-6 text-emerald-500 flex-shrink-0" />
+          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
+            <Users2 className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-500 dark:text-indigo-400 flex-shrink-0" />
             <span>Manage Foundation Members</span>
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Directory of all contributing members, fund circle allocations, and financial ledger links.
-          </p>
         </div>
 
         {hasPermission('members.create') && (

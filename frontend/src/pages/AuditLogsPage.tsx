@@ -68,12 +68,10 @@ export const AuditLogsPage: React.FC = () => {
     <div className="space-y-6">
       {/* Header Bar */}
       <div>
-        <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-          System Audit Trail & Security Logs
+        <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
+          <History className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-500 dark:text-indigo-400" />
+          <span>Audit Trail & Security Logs</span>
         </h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-          Complete, tamper-evident audit record of user logins, ledger disbursements, modifications, and repayments.
-        </p>
       </div>
 
       {/* Filter Bar */}

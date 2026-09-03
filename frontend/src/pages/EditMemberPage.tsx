@@ -410,62 +410,37 @@ export const EditMemberPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6 pb-20 max-w-5xl mx-auto">
-      {/* Top Navigation & Breadcrumb */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
-        <button
-          type="button"
-          onClick={handleCancel}
-          className="inline-flex items-center space-x-2 text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors w-fit"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>← Back to Member Profile</span>
-        </button>
-
-        <div className="flex items-center space-x-2 text-xs text-slate-400">
-          <span>Foundation</span>
-          <span>/</span>
-          <Link to="/app/members/manage" className="hover:underline">Members</Link>
-          <span>/</span>
-          <Link to={`/app/members/${member.id}`} className="hover:underline font-mono text-emerald-600 dark:text-emerald-400 font-bold">
-            {member.member_code || member.name}
-          </Link>
-          <span>/</span>
-          <span className="font-semibold text-slate-700 dark:text-slate-300">Edit</span>
-        </div>
-      </div>
-
-      {/* Page Header Banner */}
-      <div className="p-6 rounded-3xl bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 text-white shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-emerald-800/40">
+    <div className="space-y-5 pb-16 max-w-4xl mx-auto">
+      {/* Header Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider block">
-            Edit Member Records
-          </span>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight mt-0.5">
-            {member.name}
+          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
+            <UserCheck className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-500 dark:text-indigo-400" />
+            <span>Edit Member: {member.name}</span>
           </h1>
-          <div className="flex flex-wrap items-center gap-2 mt-2 text-xs">
-            <span className="px-2.5 py-0.5 rounded-lg bg-white/10 text-emerald-300 font-mono font-bold border border-white/10">
-              Member ID: {member.member_code || 'M-UNSET'}
+          <div className="flex flex-wrap items-center gap-2 mt-1 text-xs">
+            <span className="font-mono text-slate-500 dark:text-slate-400">
+              ID: {member.member_code || 'M-UNSET'}
             </span>
-            <span className="px-2.5 py-0.5 rounded-lg bg-white/10 text-slate-300 border border-white/10">
-              Group: {member.group_name || 'No Group'}
+            <span className="text-slate-300 dark:text-slate-600">•</span>
+            <span className="text-slate-500 dark:text-slate-400">
+              {member.group_name || 'No Group'}
             </span>
+            <span className="text-slate-300 dark:text-slate-600">•</span>
             <Badge variant={isActive ? 'success' : 'neutral'}>
-              {isActive ? 'Active Member' : 'Inactive Member'}
+              {isActive ? 'Active' : 'Inactive'}
             </Badge>
           </div>
         </div>
 
-        <div className="flex items-center gap-2.5 self-start sm:self-center">
+        <div className="flex items-center gap-2 flex-shrink-0">
           <Button
             type="button"
             variant="outline"
             size="sm"
             onClick={handleCancel}
             disabled={saving}
-            className="border-slate-700 text-slate-200 hover:bg-slate-800"
-            leftIcon={<X className="w-4 h-4" />}
+            leftIcon={<X className="w-3.5 h-3.5" />}
           >
             Cancel
           </Button>
@@ -476,20 +451,17 @@ export const EditMemberPage: React.FC = () => {
             size="sm"
             onClick={handleSaveChanges}
             isLoading={saving}
-            leftIcon={<Save className="w-4 h-4" />}
+            leftIcon={<Save className="w-3.5 h-3.5" />}
           >
-            {saving ? (uploadingDocs ? 'Uploading Files...' : 'Saving...') : 'Save Changes'}
+            {saving ? (uploadingDocs ? 'Saving...' : 'Saving...') : 'Save Changes'}
           </Button>
         </div>
       </div>
 
       {/* Form Container */}
-      <form onSubmit={handleSaveChanges} className="space-y-6">
+      <form onSubmit={handleSaveChanges} className="space-y-5">
         {/* Basic Information */}
-        <Card
-          title="Basic Information"
-          subtitle="Member identity, fund circle association, and membership timeline."
-        >
+        <Card title="Basic Information">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <Input
@@ -498,7 +470,6 @@ export const EditMemberPage: React.FC = () => {
                 onChange={(e) => setMemberCode(e.target.value)}
                 placeholder="e.g. M-0008 or MEM-2026-008"
               />
-              <p className="text-[11px] text-slate-400 mt-1">Human-facing ID. Uniqueness is enforced by backend.</p>
             </div>
 
             <div>
@@ -515,7 +486,6 @@ export const EditMemberPage: React.FC = () => {
                   </option>
                 ))}
               </Select>
-              <p className="text-[11px] text-slate-400 mt-1">Accounting group for member dues & funds</p>
             </div>
 
             <div>
@@ -525,7 +495,6 @@ export const EditMemberPage: React.FC = () => {
                 value={joinDate}
                 onChange={(e) => setJoinDate(e.target.value)}
               />
-              <p className="text-[11px] text-slate-400 mt-1">Official date membership was granted</p>
             </div>
 
             <div>
@@ -538,9 +507,6 @@ export const EditMemberPage: React.FC = () => {
                 value={monthlyContributionAmount}
                 onChange={(e) => setMonthlyContributionAmount(e.target.value)}
               />
-              <p className="text-[11px] text-slate-400 mt-1">
-                Custom monthly due for this member. Leave empty for global default.
-              </p>
             </div>
 
             <div className="sm:col-span-3 pt-2">
@@ -551,17 +517,14 @@ export const EditMemberPage: React.FC = () => {
                   onChange={(e) => setIsActive(e.target.checked)}
                   className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 w-4 h-4 cursor-pointer"
                 />
-                <span>Active Member Status (Deactivating prevents new dues allocation)</span>
+                <span>Active Member Status</span>
               </label>
             </div>
           </div>
         </Card>
 
         {/* 1. Personal Information */}
-        <Card
-          title="1. Personal Information"
-          subtitle="Legal identity, contact numbers, demographics, and residence."
-        >
+        <Card title="1. Personal Information">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="sm:col-span-2 lg:col-span-3">
               <Input
@@ -699,11 +662,8 @@ export const EditMemberPage: React.FC = () => {
         </Card>
 
         {/* 2 & 3. Emergency Contact & Reference */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card
-            title="2. Emergency Contact"
-            subtitle="Next of kin / trusted reach in case of urgent matters."
-          >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Card title="2. Emergency Contact">
             <div className="space-y-4">
               <Input
                 label="Emergency Contact Name (Optional)"
@@ -727,10 +687,7 @@ export const EditMemberPage: React.FC = () => {
             </div>
           </Card>
 
-          <Card
-            title="3. Reference Person"
-            subtitle="Existing foundation or community referee."
-          >
+          <Card title="3. Reference Person">
             <div className="space-y-4">
               <Input
                 label="Reference Name (Optional)"
@@ -756,10 +713,7 @@ export const EditMemberPage: React.FC = () => {
         </div>
 
         {/* 4. Commitment & Declaration */}
-        <Card
-          title="4. Commitment & Declaration"
-          subtitle="Constitutional bylaws acknowledgment & joining purpose."
-        >
+        <Card title="4. Commitment & Declaration">
           <div className="space-y-4">
             <label className="flex items-start space-x-3 p-3.5 rounded-2xl bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/80 cursor-pointer">
               <input
@@ -797,11 +751,8 @@ export const EditMemberPage: React.FC = () => {
         </Card>
 
         {/* 5. Documents & Media (Cloudinary) */}
-        <Card
-          title="5. Documents & Verification Media"
-          subtitle="Cloudinary-backed photo, digital signature, and identity documents."
-        >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card title="5. Documents & Media">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* 1. Member Photo */}
             <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60 flex flex-col justify-between space-y-3">
               <div>

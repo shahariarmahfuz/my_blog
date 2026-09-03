@@ -122,40 +122,18 @@ export const AddDonationPage: React.FC = () => {
   const selectedGroup = externalGroups.find((g) => g.id === groupId);
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-5 pb-12">
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
-            <HeartHandshake className="w-7 h-7 text-purple-600 dark:text-purple-400" />
-            <span>Receive External Donation</span>
-          </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Record fund income from non-member donors directly into an External Fund Group.
-          </p>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            onClick={() => navigate('/app/donations/manage')}
-            leftIcon={<Receipt className="w-4 h-4" />}
-          >
-            Manage Donations
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => navigate('/app/donations/ledger')}
-            leftIcon={<FileText className="w-4 h-4" />}
-          >
-            Donation Ledger
-          </Button>
-        </div>
+      <div>
+        <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
+          <HeartHandshake className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-500 dark:text-indigo-400" />
+          <span>Receive External Donation</span>
+        </h1>
       </div>
 
       {/* No External Groups Warning */}
       {!loadingGroups && externalGroups.length === 0 && (
-        <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 flex items-start space-x-3">
+        <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 flex items-start space-x-3">
           <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
           <div className="text-xs text-amber-900 dark:text-amber-200">
             <p className="font-bold">No External Fund Groups Found</p>
@@ -176,10 +154,10 @@ export const AddDonationPage: React.FC = () => {
 
       {/* Success Notification Banner */}
       {createdDonation && (
-        <div className="p-5 rounded-2xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fadeIn">
+        <div className="p-4 sm:p-5 rounded-2xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-fadeIn">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white flex-shrink-0 shadow-md shadow-purple-600/30">
-              <CheckCircle2 className="w-6 h-6" />
+            <div className="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center text-white flex-shrink-0 shadow-md shadow-indigo-600/30">
+              <CheckCircle2 className="w-5 h-5" />
             </div>
             <div>
               <h4 className="font-bold text-purple-950 dark:text-purple-200 text-sm">
@@ -191,32 +169,29 @@ export const AddDonationPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 flex-shrink-0">
             <Button
               size="sm"
               variant="outline"
               onClick={handleReset}
             >
-              Add Another Donation
+              Record Another
             </Button>
             <Button
               size="sm"
               variant="primary"
-              onClick={() => navigate(`/app/donations/${createdDonation.id}`)}
+              onClick={() => navigate('/app/donations/ledger')}
               rightIcon={<ArrowRight className="w-3.5 h-3.5" />}
             >
-              View Receipt
+              Donation Ledger
             </Button>
           </div>
         </div>
       )}
 
       {/* Donation Entry Form */}
-      <Card
-        title="Donation Details"
-        subtitle="External donor records do NOT create members or affect member contribution tables."
-      >
-        <form onSubmit={handleSubmit} className="space-y-6">
+      <Card title="Donation Details">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* 1. Donor Information */}
           <div className="space-y-4">
             <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center space-x-2">

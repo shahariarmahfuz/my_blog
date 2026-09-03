@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { contributionsApi, groupsApi } from '../api/client';
 import { YearlyMonthlySummaryResponse, Group, MemberMonthlySummaryRow, MonthStatusOut } from '../types';
 import { Card } from '../components/ui/Card';
@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 
 export const MonthlySummaryPage: React.FC = () => {
+  const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -227,35 +228,34 @@ export const MonthlySummaryPage: React.FC = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12 w-full overflow-hidden">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2 border-b border-slate-200 dark:border-slate-800">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
-            <Calendar className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
+            <Calendar className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-500 dark:text-indigo-400" />
             <span>Monthly Contributions</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium mt-0.5">
-            Contributions for {selectedYear} • Member-wise fulfillment matrix
-          </p>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center space-x-2.5">
-          <button
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => loadSummary(true)}
             disabled={refreshing || loading}
-            className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-xs"
-            title="Refresh Data"
+            leftIcon={<RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-indigo-500' : ''}`} />}
           >
-            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin text-emerald-500' : ''}`} />
-          </button>
+            Refresh
+          </Button>
 
-          <Link
-            to="/app/contributions/add"
-            className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-600/20 transition-all flex items-center space-x-1.5"
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => navigate('/app/contributions/add')}
+            leftIcon={<PiggyBank className="w-3.5 h-3.5" />}
           >
-            <PiggyBank className="w-4 h-4" />
-            <span>Add Contribution</span>
-          </Link>
+            Add Contribution
+          </Button>
         </div>
       </div>
 

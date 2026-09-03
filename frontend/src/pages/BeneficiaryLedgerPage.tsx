@@ -101,24 +101,11 @@ export const BeneficiaryLedgerPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
-            <FileSpreadsheet className="w-7 h-7 text-emerald-500" />
-            <span>Beneficiary Financial Ledger</span>
-          </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Complete assistance disbursements, loan repayments, and running outstanding loan balances.
-          </p>
-        </div>
-
-        <Button
-          variant="outline"
-          onClick={() => navigate('/app/beneficiaries/manage')}
-          leftIcon={<ArrowLeft className="w-4 h-4" />}
-        >
-          Back to Beneficiary List
-        </Button>
+      <div>
+        <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
+          <FileSpreadsheet className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-500 dark:text-indigo-400" />
+          <span>Beneficiary Financial Ledger</span>
+        </h1>
       </div>
 
       {/* Beneficiary Selector Bar */}

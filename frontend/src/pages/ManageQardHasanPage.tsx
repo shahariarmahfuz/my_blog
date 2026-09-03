@@ -90,15 +90,12 @@ export const ManageQardHasanPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
-            <HandCoins className="w-7 h-7 text-emerald-500" />
-            <span>Manage Qard Hasan (Interest-Free Loans)</span>
+          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
+            <HandCoins className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-500 dark:text-indigo-400" />
+            <span>Manage Qard Hasan</span>
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Track revolving loan portfolios, multi-group co-funding splits, repayments, and outstanding balances.
-          </p>
         </div>
 
         <div className="flex items-center space-x-2">

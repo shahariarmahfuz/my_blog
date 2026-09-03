@@ -93,23 +93,17 @@ export const AssistanceSettingsPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
+    <div className="space-y-5 max-w-4xl mx-auto pb-12">
       <div>
-        <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
-          <HandCoins className="w-7 h-7 text-emerald-500" />
-          <span>Assistance & Financing Settings</span>
+        <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
+          <HandCoins className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-500 dark:text-indigo-400" />
+          <span>Assistance Settings</span>
         </h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-          Configure revolving Qard Hasan loan tenures, installment defaults, and Sadaqah grant categories.
-        </p>
       </div>
 
       <SettingsNav />
 
-      <Card
-        title="Assistance & Loan Policy Configuration"
-        subtitle="Islamic interest-free micro-credit parameters and humanitarian grant classifications."
-      >
+      <Card title="Assistance & Loan Policy Configuration">
         {loading ? (
           <div className="flex justify-center py-12">
             <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>

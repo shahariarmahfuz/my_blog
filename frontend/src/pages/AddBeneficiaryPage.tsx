@@ -309,34 +309,21 @@ export const AddBeneficiaryPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 pb-16">
+    <div className="max-w-4xl mx-auto space-y-5 pb-12">
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
-            <UserPlus className="w-7 h-7 text-emerald-500" />
-            <span>Add New Beneficiary</span>
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Register a Qard Hasan borrower or Sadaqah recipient. <b>Only Full Name and Group are required.</b> All other fields are optional.
-          </p>
-        </div>
-
-        <Button
-          variant="outline"
-          onClick={() => navigate('/app/beneficiaries/manage')}
-          leftIcon={<HeartHandshake className="w-4 h-4" />}
-        >
-          Manage Beneficiaries
-        </Button>
+      <div>
+        <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
+          <UserPlus className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-500 dark:text-indigo-400" />
+          <span>Add New Beneficiary</span>
+        </h1>
       </div>
 
       {/* Success Notification Banner */}
       {createdBenId && (
-        <div className="p-5 rounded-3xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fadeIn shadow-sm">
+        <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-fadeIn">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-500 flex items-center justify-center text-white flex-shrink-0 shadow-md shadow-emerald-500/30">
-              <CheckCircle2 className="w-6 h-6" />
+            <div className="w-9 h-9 rounded-full bg-emerald-500 flex items-center justify-center text-white flex-shrink-0 shadow-md shadow-emerald-500/30">
+              <CheckCircle2 className="w-5 h-5" />
             </div>
             <div>
               <h4 className="font-bold text-emerald-950 dark:text-emerald-200 text-sm">
@@ -348,7 +335,7 @@ export const AddBeneficiaryPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 flex-shrink-0">
             <Button
               size="sm"
               variant="outline"
@@ -362,83 +349,56 @@ export const AddBeneficiaryPage: React.FC = () => {
               onClick={() => navigate(`/app/beneficiaries/ledger?beneficiary_id=${createdBenId}`)}
               rightIcon={<ArrowRight className="w-3.5 h-3.5" />}
             >
-              View Beneficiary Ledger
+              Beneficiary Ledger
             </Button>
           </div>
         </div>
       )}
 
       {/* Main Registration Form */}
-      <form onSubmit={handleSubmit} className="space-y-8">
-        {/* ==================================================== */}
-        {/* BASIC INFORMATION                                   */}
-        {/* ==================================================== */}
-        <Card
-          title="Basic Information"
-          subtitle="Core identity and fund circle cohort assignment."
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {/* Beneficiary ID (Optional - Manual or Auto-generated) */}
-            <div>
-              <Input
-                label="Beneficiary ID (Optional)"
-                value={beneficiaryCode}
-                onChange={(e) => setBeneficiaryCode(e.target.value)}
-                placeholder="Leave empty to auto-generate (e.g. B-0001)"
-              />
-              <p className="text-[10px] text-slate-400 mt-1">
-                Optional: Enter custom ID or leave blank for backend auto-generation.
-              </p>
-            </div>
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Basic Information */}
+        <Card title="Basic Information">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Input
+              label="Beneficiary ID (Optional)"
+              value={beneficiaryCode}
+              onChange={(e) => setBeneficiaryCode(e.target.value)}
+              placeholder="Leave empty to auto-generate (e.g. B-0001)"
+            />
 
-            {/* Assigned Fund Group * (REQUIRED) */}
-            <div>
-              <Select
-                label="Assigned Fund Group *"
-                value={groupId}
-                onChange={(e) => setGroupId(e.target.value)}
-                required
-                disabled={loadingGroups}
-              >
-                {loadingGroups ? (
-                  <option value="">Loading groups...</option>
-                ) : groups.length === 0 ? (
-                  <option value="">No fund groups available</option>
-                ) : (
-                  groups.map((g) => (
-                    <option key={g.id} value={g.id}>
-                      {g.name} {g.code ? `(${g.code})` : ''}
-                    </option>
-                  ))
-                )}
-              </Select>
-              <p className="text-[10px] text-emerald-600 dark:text-emerald-400 mt-1 font-semibold">
-                * Required: Cohort group for assistance accounting
-              </p>
-            </div>
+            <Select
+              label="Assigned Fund Group *"
+              value={groupId}
+              onChange={(e) => setGroupId(e.target.value)}
+              required
+              disabled={loadingGroups}
+            >
+              {loadingGroups ? (
+                <option value="">Loading groups...</option>
+              ) : groups.length === 0 ? (
+                <option value="">No fund groups available</option>
+              ) : (
+                groups.map((g) => (
+                  <option key={g.id} value={g.id}>
+                    {g.name} {g.code ? `(${g.code})` : ''}
+                  </option>
+                ))
+              )}
+            </Select>
 
-            {/* Registration Date (Optional) */}
-            <div>
-              <Input
-                label="Registration Date (Optional)"
-                type="date"
-                value={registrationDate}
-                onChange={(e) => setRegistrationDate(e.target.value)}
-              />
-              <p className="text-[10px] text-slate-400 mt-1">Defaults to today, editable</p>
-            </div>
+            <Input
+              label="Registration Date (Optional)"
+              type="date"
+              value={registrationDate}
+              onChange={(e) => setRegistrationDate(e.target.value)}
+            />
           </div>
         </Card>
 
-        {/* ==================================================== */}
-        {/* 1. PERSONAL INFORMATION                             */}
-        {/* ==================================================== */}
-        <Card
-          title="1. Personal Information"
-          subtitle="Full Name is required. All other background fields are completely optional."
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {/* Full Name * (REQUIRED) */}
+        {/* 1. Personal Information */}
+        <Card title="1. Personal Information">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="sm:col-span-2 lg:col-span-3">
               <Input
                 label="Full Name *"
@@ -448,9 +408,6 @@ export const AddBeneficiaryPage: React.FC = () => {
                 required
                 autoFocus
               />
-              <p className="text-[10px] text-emerald-600 dark:text-emerald-400 mt-1 font-semibold">
-                * Required: Primary identity for disbursement vouchers and ledger records
-              </p>
             </div>
 
             <Input
@@ -562,14 +519,9 @@ export const AddBeneficiaryPage: React.FC = () => {
           </div>
         </Card>
 
-        {/* ==================================================== */}
-        {/* 2. EMERGENCY CONTACT                                */}
-        {/* ==================================================== */}
-        <Card
-          title="2. Emergency Contact"
-          subtitle="All fields optional. Contact person or guarantor for emergency communications."
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        {/* 2. Emergency Contact */}
+        <Card title="2. Emergency Contact">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Input
               label="Contact Name (Optional)"
               placeholder="e.g. Md. Shahidul Islam"
@@ -594,21 +546,16 @@ export const AddBeneficiaryPage: React.FC = () => {
           </div>
         </Card>
 
-        {/* ==================================================== */}
-        {/* 3. DOCUMENTS (Cloudinary via FastAPI)               */}
-        {/* ==================================================== */}
-        <Card
-          title="3. Documents & Verification Media"
-          subtitle="Optional photos and identity attachments. Uploads are stored securely in Cloudinary."
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {/* 3. Documents & Media */}
+        <Card title="3. Documents & Media">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Beneficiary Photo */}
-            <div className="space-y-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/70 dark:border-slate-700/50 flex flex-col items-center text-center">
+            <div className="space-y-3 p-3.5 sm:p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 flex flex-col items-center text-center">
               <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
                 Photo (Optional)
               </span>
 
-              <div className="w-20 h-20 rounded-2xl bg-slate-200 dark:bg-slate-700 overflow-hidden flex items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-600">
+              <div className="w-20 h-20 rounded-xl bg-slate-200 dark:bg-slate-700 overflow-hidden flex items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-600">
                 {photoPreview ? (
                   <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
                 ) : (
@@ -636,12 +583,12 @@ export const AddBeneficiaryPage: React.FC = () => {
             </div>
 
             {/* Signature */}
-            <div className="space-y-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/70 dark:border-slate-700/50 flex flex-col items-center text-center">
+            <div className="space-y-3 p-3.5 sm:p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 flex flex-col items-center text-center">
               <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
                 Signature (Optional)
               </span>
 
-              <div className="w-20 h-20 rounded-2xl bg-slate-200 dark:bg-slate-700 overflow-hidden flex items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-600">
+              <div className="w-20 h-20 rounded-xl bg-slate-200 dark:bg-slate-700 overflow-hidden flex items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-600">
                 {signaturePreview ? (
                   <img src={signaturePreview} alt="Signature" className="w-full h-full object-contain p-2" />
                 ) : (
@@ -669,7 +616,7 @@ export const AddBeneficiaryPage: React.FC = () => {
             </div>
 
             {/* NID Front */}
-            <div className="space-y-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/70 dark:border-slate-700/50 flex flex-col justify-between">
+            <div className="space-y-3 p-3.5 sm:p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
               <div>
                 <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider block text-center mb-2">
                   ID Front (Optional)
@@ -710,14 +657,11 @@ export const AddBeneficiaryPage: React.FC = () => {
             </div>
 
             {/* NID Back */}
-            <div className="space-y-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/70 dark:border-slate-700/50 flex flex-col justify-between">
+            <div className="space-y-3 p-3.5 sm:p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
               <div>
                 <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider block text-center mb-2">
                   ID Back (Optional)
                 </span>
-                <p className="text-[11px] text-slate-400 text-center">
-                  Back side of National ID / Verification document
-                </p>
                 {docBackName && (
                   <p className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 truncate text-center mt-2">
                     📄 {docBackName}
@@ -747,14 +691,9 @@ export const AddBeneficiaryPage: React.FC = () => {
           </div>
         </Card>
 
-        {/* ==================================================== */}
-        {/* 4. ADDITIONAL INFORMATION                           */}
-        {/* ==================================================== */}
-        <Card
-          title="4. Additional Information"
-          subtitle="Household composition, financial condition, and case notes (Optional)."
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {/* 4. Additional Information */}
+        <Card title="4. Additional Information">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input
               label="Family Members Count (Optional)"
               type="number"
@@ -788,7 +727,7 @@ export const AddBeneficiaryPage: React.FC = () => {
         </Card>
 
         {/* Form Action Controls */}
-        <div className="flex items-center justify-between pt-6 border-t border-slate-200 dark:border-slate-800">
+        <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
           <Button
             type="button"
             variant="outline"
@@ -801,11 +740,10 @@ export const AddBeneficiaryPage: React.FC = () => {
           <Button
             type="submit"
             variant="primary"
-            size="lg"
             isLoading={saving}
-            leftIcon={<UserPlus className="w-5 h-5" />}
+            leftIcon={<UserPlus className="w-4 h-4" />}
           >
-            {uploadingDocs ? 'Uploading & Registering Beneficiary...' : 'Save & Register Beneficiary'}
+            {uploadingDocs ? 'Registering Beneficiary...' : 'Save & Register Beneficiary'}
           </Button>
         </div>
       </form>

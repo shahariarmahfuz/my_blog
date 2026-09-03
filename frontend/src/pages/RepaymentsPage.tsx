@@ -20,7 +20,8 @@ import {
   CheckCircle2,
   AlertCircle,
   Eye,
-  CreditCard
+  CreditCard,
+  HandCoins
 } from 'lucide-react';
 
 export const RepaymentsPage: React.FC = () => {
@@ -151,14 +152,12 @@ export const RepaymentsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Qard Hasan Repayments
+          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
+            <HandCoins className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-500 dark:text-indigo-400" />
+            <span>Qard Hasan Repayments</span>
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Automated proportional distribution of recovered funds back to original funding groups.
-          </p>
         </div>
 
         {hasPermission('repayments.create') && (

@@ -203,30 +203,17 @@ export const AddSadaqahPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-5 pb-12">
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
-            <HeartHandshake className="w-7 h-7 text-rose-500" />
-            <span>Disburse Sadaqah (Non-Recoverable Grant)</span>
-          </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Provide emergency relief, medical aid, or poverty assistance. <b>Non-recoverable grant funded by one or multiple groups.</b>
-          </p>
-        </div>
-
-        <Button
-          variant="outline"
-          onClick={() => navigate('/app/assistance/sadaqah/manage')}
-          leftIcon={<FileSpreadsheet className="w-4 h-4" />}
-        >
-          Manage Sadaqah
-        </Button>
+      <div>
+        <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
+          <HeartHandshake className="w-6 h-6 sm:w-7 sm:h-7 text-rose-500 dark:text-rose-400" />
+          <span>Disburse Sadaqah (Non-Recoverable Grant)</span>
+        </h1>
       </div>
 
       {/* Non-Recoverable Notice Box */}
-      <div className="p-4 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900 rounded-2xl flex items-start space-x-3 text-xs text-rose-900 dark:text-rose-200">
+      <div className="p-3.5 sm:p-4 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900 rounded-xl flex items-start space-x-3 text-xs text-rose-900 dark:text-rose-200">
         <ShieldAlert className="w-5 h-5 text-rose-600 dark:text-rose-400 flex-shrink-0 mt-0.5" />
         <div>
           <p className="font-bold">Notice on Non-Recoverable Sadaqah</p>
@@ -238,10 +225,10 @@ export const AddSadaqahPage: React.FC = () => {
 
       {/* Success Notification Banner */}
       {createdCode && (
-        <div className="p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fadeIn">
+        <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-fadeIn">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center text-white flex-shrink-0 shadow-md shadow-emerald-500/30">
-              <CheckCircle2 className="w-6 h-6" />
+            <div className="w-9 h-9 rounded-full bg-emerald-500 flex items-center justify-center text-white flex-shrink-0 shadow-md shadow-emerald-500/30">
+              <CheckCircle2 className="w-5 h-5" />
             </div>
             <div>
               <h4 className="font-bold text-emerald-950 dark:text-emerald-200 text-sm">
@@ -253,7 +240,7 @@ export const AddSadaqahPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 flex-shrink-0">
             <Button
               size="sm"
               variant="outline"
@@ -267,18 +254,15 @@ export const AddSadaqahPage: React.FC = () => {
               onClick={() => navigate('/app/assistance/sadaqah/manage')}
               rightIcon={<ArrowRight className="w-3.5 h-3.5" />}
             >
-              View Sadaqah Grants
+              Sadaqah Grants
             </Button>
           </div>
         </div>
       )}
 
       {/* Form Card */}
-      <Card
-        title="Sadaqah Grant Intake Form"
-        subtitle="Mandatory: Beneficiary, Total Amount, and at least one funding group. Multi-group co-funding is verified by backend."
-      >
-        <form onSubmit={handleSubmit} className="space-y-6">
+      <Card title="Sadaqah Grant Intake Form">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* Main Details */}
           <div className="p-5 rounded-2xl bg-rose-50/40 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/40 space-y-4">
             <div className="flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-rose-800 dark:text-rose-300">

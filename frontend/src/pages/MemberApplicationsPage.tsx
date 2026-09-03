@@ -248,16 +248,11 @@ export const MemberApplicationsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
-            <ClipboardList className="w-7 h-7 text-emerald-500" />
-            <span>Public Member Applications</span>
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Review admissions requests submitted through the public Foundation portal.
-          </p>
-        </div>
+      <div>
+        <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
+          <ClipboardList className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-500 dark:text-indigo-400" />
+          <span>Member Applications</span>
+        </h1>
       </div>
 
       {/* Summary KPI Cards */}

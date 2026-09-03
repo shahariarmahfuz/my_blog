@@ -57,23 +57,17 @@ export const GeneralSettingsPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
+    <div className="space-y-5 max-w-4xl mx-auto pb-12">
       <div>
-        <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
-          <Sliders className="w-7 h-7 text-emerald-500" />
-          <span>System Settings</span>
+        <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
+          <Sliders className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-500 dark:text-indigo-400" />
+          <span>General Settings</span>
         </h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-          Configure organization-wide defaults, localization, and UI preferences.
-        </p>
       </div>
 
       <SettingsNav />
 
-      <Card
-        title="General System Defaults"
-        subtitle="Basic organizational branding, currency display format, and default localization."
-      >
+      <Card title="General System Defaults">
         {loading ? (
           <div className="flex justify-center py-12">
             <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>

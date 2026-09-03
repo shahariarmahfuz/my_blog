@@ -60,23 +60,17 @@ export const FoundationProfilePage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
+    <div className="space-y-5 max-w-4xl mx-auto pb-12">
       <div>
-        <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
-          <Building2 className="w-7 h-7 text-emerald-500" />
+        <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
+          <Building2 className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-500 dark:text-indigo-400" />
           <span>Foundation Profile</span>
         </h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-          Manage official organization credentials, legal registration, contacts, and public disclosures.
-        </p>
       </div>
 
       <SettingsNav />
 
-      <Card
-        title="Organization Legal & Contact Information"
-        subtitle="Official details printed on receipts, financial ledgers, and formal reports."
-      >
+      <Card title="Organization Legal & Contact Information">
         {loading ? (
           <div className="flex justify-center py-12">
             <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>

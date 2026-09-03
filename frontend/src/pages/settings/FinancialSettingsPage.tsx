@@ -61,23 +61,17 @@ export const FinancialSettingsPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
+    <div className="space-y-5 max-w-4xl mx-auto pb-12">
       <div>
-        <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
-          <CircleDollarSign className="w-7 h-7 text-emerald-500" />
-          <span>Financial & Accounting Settings</span>
+        <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
+          <CircleDollarSign className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-500 dark:text-indigo-400" />
+          <span>Financial Settings</span>
         </h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-          Configure fiscal calendar, currency decimals, auto-generated transaction numbering prefixes, and double-entry rules.
-        </p>
       </div>
 
       <SettingsNav />
 
-      <Card
-        title="Accounting & Fiscal Parameters"
-        subtitle="Global rules governing journal entries, running balances, and voucher prefixes."
-      >
+      <Card title="Accounting & Fiscal Parameters">
         {loading ? (
           <div className="flex justify-center py-12">
             <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>

@@ -137,17 +137,14 @@ export const EditDonationPage: React.FC = () => {
   }
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="max-w-3xl mx-auto space-y-5 pb-12">
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
-            <Edit2 className="w-7 h-7 text-purple-600 dark:text-purple-400" />
+          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
+            <Edit2 className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-500 dark:text-indigo-400" />
             <span>Edit Donation: {donation.receipt_number}</span>
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Update donor contact information, purpose, reference number, or administrative remarks.
-          </p>
         </div>
 
         <Button
@@ -178,11 +175,8 @@ export const EditDonationPage: React.FC = () => {
       </div>
 
       {/* Edit Form */}
-      <Card
-        title="Donor & Transaction Metadata"
-        subtitle="Financial amount and fund destination are fixed to maintain ledger integrity."
-      >
-        <form onSubmit={handleSubmit} className="space-y-6">
+      <Card title="Donor & Transaction Metadata">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-4">
             <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center space-x-2">
               <User className="w-4 h-4 text-purple-600 dark:text-purple-400" />

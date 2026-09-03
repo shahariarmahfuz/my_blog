@@ -98,31 +98,21 @@ export const GroupFundPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
-            <PieChart className="w-7 h-7 text-indigo-500" />
+          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
+            <PieChart className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-500 dark:text-indigo-400" />
             <span>Group Fund & Utilization</span>
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Current fund position, assistance funding allocations, and Qard Hasan recovery tracking for this group.
-          </p>
         </div>
 
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"
             onClick={() => navigate(`/app/groups/ledger?group_id=${selectedGroupId}`)}
-            leftIcon={<FileSpreadsheet className="w-4 h-4 text-emerald-500" />}
+            leftIcon={<FileSpreadsheet className="w-4 h-4 text-indigo-500" />}
           >
             Group Ledger
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => navigate('/app/groups/manage')}
-            leftIcon={<ArrowLeft className="w-4 h-4" />}
-          >
-            Back to Groups
           </Button>
         </div>
       </div>

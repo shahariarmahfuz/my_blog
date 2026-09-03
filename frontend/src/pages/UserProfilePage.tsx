@@ -133,23 +133,17 @@ export const UserProfilePage: React.FC = () => {
   const currentDisplayAvatar = previewUrl || user?.profile_picture;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 pb-12">
+    <div className="max-w-4xl mx-auto space-y-5 pb-12">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
-          <UserIcon className="w-7 h-7 text-emerald-500" />
+        <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
+          <UserIcon className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-500 dark:text-indigo-400" />
           <span>My User Profile</span>
         </h1>
-        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-          Manage your personal staff credentials, avatar picture, and view your assigned role privileges.
-        </p>
       </div>
 
       {/* Avatar Management Card */}
-      <Card
-        title="Profile Picture"
-        subtitle="Upload a personal photo. Images are automatically cropped and compressed to WebP format."
-      >
+      <Card title="Profile Picture">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
           {/* Avatar Display */}
           <div className="relative group flex-shrink-0">
@@ -241,10 +235,7 @@ export const UserProfilePage: React.FC = () => {
       </Card>
 
       {/* Personal Information Form */}
-      <Card
-        title="Personal Information"
-        subtitle="Update your full name, phone number, and contact email."
-      >
+      <Card title="Personal Information">
         <form onSubmit={handleSaveProfile} className="space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -303,10 +294,7 @@ export const UserProfilePage: React.FC = () => {
       </Card>
 
       {/* Read-Only Role & RBAC Permissions Summary */}
-      <Card
-        title="Role & Access Privileges"
-        subtitle="System authorization summary (Read-Only)."
-      >
+      <Card title="Role & Access Privileges">
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60">
             <div className="flex items-center space-x-3">

@@ -249,34 +249,21 @@ export const AddQardHasanPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-5 pb-12">
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
-            <HandCoins className="w-7 h-7 text-emerald-500" />
-            <span>Disburse Qard Hasan (Interest-Free Loan)</span>
-          </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Provide interest-free revolving financing to a beneficiary with optional multi-group funding and installment planning.
-          </p>
-        </div>
-
-        <Button
-          variant="outline"
-          onClick={() => navigate('/app/assistance/qard-hasan/manage')}
-          leftIcon={<FileSpreadsheet className="w-4 h-4" />}
-        >
-          Manage Qard Hasan
-        </Button>
+      <div>
+        <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
+          <HandCoins className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-500 dark:text-indigo-400" />
+          <span>Disburse Qard Hasan (Interest-Free Loan)</span>
+        </h1>
       </div>
 
       {/* Success Notification Banner */}
       {createdCode && (
-        <div className="p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fadeIn">
+        <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-fadeIn">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center text-white flex-shrink-0 shadow-md shadow-emerald-500/30">
-              <CheckCircle2 className="w-6 h-6" />
+            <div className="w-9 h-9 rounded-full bg-emerald-500 flex items-center justify-center text-white flex-shrink-0 shadow-md shadow-emerald-500/30">
+              <CheckCircle2 className="w-5 h-5" />
             </div>
             <div>
               <h4 className="font-bold text-emerald-950 dark:text-emerald-200 text-sm">
@@ -288,7 +275,7 @@ export const AddQardHasanPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 flex-shrink-0">
             <Button
               size="sm"
               variant="outline"
@@ -302,18 +289,15 @@ export const AddQardHasanPage: React.FC = () => {
               onClick={() => navigate('/app/assistance/qard-hasan/repayments')}
               rightIcon={<ArrowRight className="w-3.5 h-3.5" />}
             >
-              Go to Repayments
+              Repayments
             </Button>
           </div>
         </div>
       )}
 
       {/* Qard Hasan Form Card */}
-      <Card
-        title="Qard Hasan Loan Application & Disbursement"
-        subtitle="Mandatory: Beneficiary, Total Amount, and at least one funding group. Multi-group co-funding is supported."
-      >
-        <form onSubmit={handleSubmit} className="space-y-6">
+      <Card title="Qard Hasan Loan Application & Disbursement">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* Main Details */}
           <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

@@ -112,17 +112,12 @@ export const PermissionsMatrixPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
-            <ShieldCheck className="w-7 h-7 text-emerald-500" />
-            <span>Visual Role-Permission Matrix</span>
-          </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Configure backend-enforced granular access privileges for each organizational role.
-          </p>
-        </div>
+    <div className="space-y-5 max-w-7xl mx-auto pb-12">
+      <div>
+        <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
+          <ShieldCheck className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-500 dark:text-indigo-400" />
+          <span>Role-Permission Matrix</span>
+        </h1>
       </div>
 
       <SettingsNav />

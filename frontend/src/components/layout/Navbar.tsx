@@ -10,7 +10,6 @@ import {
   LogOut,
   ChevronDown,
   Globe,
-  Search,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -161,17 +160,8 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      {/* Right: Search & Actions */}
-      <div className="flex items-center gap-1.5 sm:gap-4 flex-shrink-0">
-        {/* Search Bar */}
-        <div className="relative hidden md:block">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="bg-slate-100 dark:bg-slate-800 pl-10 pr-4 py-2 rounded-lg text-sm text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-400 w-52 lg:w-64 border border-transparent dark:border-slate-700"
-          />
-          <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
-        </div>
+      {/* Right: Actions */}
+      <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
 
         {/* Public Website quick link */}
         <Link

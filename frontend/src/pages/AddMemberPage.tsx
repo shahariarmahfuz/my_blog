@@ -6,30 +6,16 @@ import { Button } from '../components/ui/Button';
 import { Input, Textarea } from '../components/ui/Input';
 import { Select } from '../components/ui/Select';
 import { Card } from '../components/ui/Card';
-import { Badge } from '../components/ui/Badge';
 import { useToast } from '../context/ToastContext';
 import {
   UserPlus,
-  Users2,
   CheckCircle2,
   ArrowRight,
-  User,
-  Shield,
-  PhoneCall,
-  UserCheck,
-  FileText,
   Upload,
   Camera,
   PenTool,
-  Info,
-  CheckSquare,
-  Square,
-  Sparkles,
   Paperclip,
-  Trash2,
-  Calendar,
-  HeartHandshake,
-  PiggyBank
+  HeartHandshake
 } from 'lucide-react';
 
 export const AddMemberPage: React.FC = () => {
@@ -99,7 +85,7 @@ export const AddMemberPage: React.FC = () => {
   const signatureInputRef = useRef<HTMLInputElement>(null);
   const docInputRef = useRef<HTMLInputElement>(null);
 
-  const { success, error, info } = useToast();
+  const { success, error } = useToast();
   const navigate = useNavigate();
 
   // Load active groups, next auto-generated member code, and contribution settings
@@ -315,46 +301,33 @@ export const AddMemberPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 pb-16">
+    <div className="max-w-4xl mx-auto space-y-5 pb-12">
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
-            <UserPlus className="w-7 h-7 text-emerald-500" />
-            <span>Add New Member</span>
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Register a foundation contributing member. <b>Only Full Name and Group are required.</b> All other fields are optional.
-          </p>
-        </div>
-
-        <Button
-          variant="outline"
-          onClick={() => navigate('/app/members/manage')}
-          leftIcon={<Users2 className="w-4 h-4" />}
-        >
-          Manage Members
-        </Button>
+      <div>
+        <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
+          <UserPlus className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-500 dark:text-indigo-400" />
+          <span>Add New Member</span>
+        </h1>
       </div>
 
       {/* Success Notification Banner */}
       {createdMemberId && (
-        <div className="p-5 rounded-3xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fadeIn shadow-sm">
+        <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-fadeIn">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-500 flex items-center justify-center text-white flex-shrink-0 shadow-md shadow-emerald-500/30">
-              <CheckCircle2 className="w-6 h-6" />
+            <div className="w-9 h-9 rounded-full bg-emerald-500 flex items-center justify-center text-white flex-shrink-0 shadow-md shadow-emerald-500/30">
+              <CheckCircle2 className="w-5 h-5" />
             </div>
             <div>
               <h4 className="font-bold text-emerald-950 dark:text-emerald-200 text-sm">
-                Member "{createdMemberName}" Registered Successfully!
+                Member "{createdMemberName}" Enrolled Successfully!
               </h4>
               <p className="text-xs text-emerald-700 dark:text-emerald-400 mt-0.5">
-                Ready to record monthly contributions or inspect member financial ledger.
+                Ready to record monthly contributions or view member financial ledger.
               </p>
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 flex-shrink-0">
             <Button
               size="sm"
               variant="outline"
@@ -368,99 +341,66 @@ export const AddMemberPage: React.FC = () => {
               onClick={() => navigate(`/app/members/ledger?member_id=${createdMemberId}`)}
               rightIcon={<ArrowRight className="w-3.5 h-3.5" />}
             >
-              View Member Ledger
+              Member Ledger
             </Button>
           </div>
         </div>
       )}
 
       {/* Main Registration Form */}
-      <form onSubmit={handleSubmit} className="space-y-8">
-        {/* ==================================================== */}
-        {/* BASIC INFORMATION                                   */}
-        {/* ==================================================== */}
-        <Card
-          title="Basic Information"
-          subtitle="Core identity and fund circle assignment."
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {/* Member ID (Optional - Manual or Auto-generated) */}
-            <div>
-              <Input
-                label="Member ID (Optional)"
-                value={memberCode}
-                onChange={(e) => setMemberCode(e.target.value)}
-                placeholder="Leave empty to auto-generate (e.g. M-0008)"
-              />
-              <p className="text-[10px] text-slate-400 mt-1">
-                Optional: Enter custom ID or leave blank for backend auto-generation.
-              </p>
-            </div>
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Basic Information */}
+        <Card title="Basic Information">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Input
+              label="Member ID (Optional)"
+              value={memberCode}
+              onChange={(e) => setMemberCode(e.target.value)}
+              placeholder="Leave empty to auto-generate (e.g. M-0008)"
+            />
 
-            {/* Assigned Fund Group * (REQUIRED) */}
-            <div>
-              <Select
-                label="Assigned Fund Group *"
-                value={groupId}
-                onChange={(e) => setGroupId(e.target.value)}
-                required
-                disabled={loadingGroups}
-              >
-                {loadingGroups ? (
-                  <option value="">Loading groups...</option>
-                ) : groups.length === 0 ? (
-                  <option value="">No fund groups available</option>
-                ) : (
-                  groups.map((g) => (
-                    <option key={g.id} value={g.id}>
-                      {g.name} {g.code ? `(${g.code})` : ''}
-                    </option>
-                  ))
-                )}
-              </Select>
-              <p className="text-[10px] text-emerald-600 dark:text-emerald-400 mt-1 font-semibold">
-                * Required: Group determines contribution allocation
-              </p>
-            </div>
+            <Select
+              label="Assigned Fund Group *"
+              value={groupId}
+              onChange={(e) => setGroupId(e.target.value)}
+              required
+              disabled={loadingGroups}
+            >
+              {loadingGroups ? (
+                <option value="">Loading groups...</option>
+              ) : groups.length === 0 ? (
+                <option value="">No fund groups available</option>
+              ) : (
+                groups.map((g) => (
+                  <option key={g.id} value={g.id}>
+                    {g.name} {g.code ? `(${g.code})` : ''}
+                  </option>
+                ))
+              )}
+            </Select>
 
-            {/* Join Date (Optional) */}
-            <div>
-              <Input
-                label="Join / Enrolment Date (Optional)"
-                type="date"
-                value={joinDate}
-                onChange={(e) => setJoinDate(e.target.value)}
-              />
-              <p className="text-[10px] text-slate-400 mt-1">Defaults to today, editable</p>
-            </div>
+            <Input
+              label="Join / Enrolment Date (Optional)"
+              type="date"
+              value={joinDate}
+              onChange={(e) => setJoinDate(e.target.value)}
+            />
 
-            {/* Monthly Contribution Amount (Optional - Pre-filled with Global Default) */}
-            <div>
-              <Input
-                label="Monthly Contribution Amount (৳)"
-                type="number"
-                min="0"
-                step="10"
-                placeholder="500"
-                value={monthlyContributionAmount}
-                onChange={(e) => setMonthlyContributionAmount(e.target.value)}
-              />
-              <p className="text-[10px] text-slate-400 mt-1">
-                Recurring monthly due for this member (pre-filled with global default ৳500).
-              </p>
-            </div>
+            <Input
+              label="Monthly Contribution Amount (৳)"
+              type="number"
+              min="0"
+              step="10"
+              placeholder="500"
+              value={monthlyContributionAmount}
+              onChange={(e) => setMonthlyContributionAmount(e.target.value)}
+            />
           </div>
         </Card>
 
-        {/* ==================================================== */}
-        {/* 1. PERSONAL INFORMATION                             */}
-        {/* ==================================================== */}
-        <Card
-          title="1. Personal Information"
-          subtitle="Full Name is required. All other personal profile fields are completely optional."
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {/* Full Name * (REQUIRED) */}
+        {/* 1. Personal Information */}
+        <Card title="1. Personal Information">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="sm:col-span-2 lg:col-span-3">
               <Input
                 label="Full Name *"
@@ -470,9 +410,6 @@ export const AddMemberPage: React.FC = () => {
                 required
                 autoFocus
               />
-              <p className="text-[10px] text-emerald-600 dark:text-emerald-400 mt-1 font-semibold">
-                * Required: Primary identity for financial ledger receipts
-              </p>
             </div>
 
             <Input
@@ -580,7 +517,7 @@ export const AddMemberPage: React.FC = () => {
               onChange={(e) => setEmail(e.target.value)}
             />
 
-            <div className="sm:col-span-2 lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div className="sm:col-span-2 lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 label="Present Address (Optional)"
                 placeholder="e.g. House #12, Road #4, Dhanmondi, Dhaka"
@@ -598,14 +535,9 @@ export const AddMemberPage: React.FC = () => {
           </div>
         </Card>
 
-        {/* ==================================================== */}
-        {/* 2. EMERGENCY CONTACT                                */}
-        {/* ==================================================== */}
-        <Card
-          title="2. Emergency Contact"
-          subtitle="All fields optional. Contact person in case of urgent communications."
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        {/* 2. Emergency Contact */}
+        <Card title="2. Emergency Contact">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Input
               label="Contact Name (Optional)"
               placeholder="e.g. Sister Fatima Ahmed"
@@ -630,14 +562,9 @@ export const AddMemberPage: React.FC = () => {
           </div>
         </Card>
 
-        {/* ==================================================== */}
-        {/* 3. REFERENCE                                        */}
-        {/* ==================================================== */}
-        <Card
-          title="3. Reference"
-          subtitle="All fields optional. Foundation member or community referee."
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        {/* 3. Reference */}
+        <Card title="3. Reference">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Input
               label="Referee Name (Optional)"
               placeholder="e.g. Brother Tariq Hasan"
@@ -662,53 +589,38 @@ export const AddMemberPage: React.FC = () => {
           </div>
         </Card>
 
-        {/* ==================================================== */}
-        {/* 4. COMMITMENT & DECLARATION                         */}
-        {/* ==================================================== */}
-        <Card
-          title="4. Commitment & Declaration"
-          subtitle="Foundation solidarity pledge (Optional)."
-        >
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60 space-y-3">
+        {/* 4. Commitment & Declaration */}
+        <Card title="4. Commitment & Declaration">
+          <div className="p-3.5 sm:p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 space-y-3">
             <div className="flex items-start space-x-3">
-              <HeartHandshake className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
-              <div className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                <p className="font-bold text-slate-900 dark:text-white mb-1">
-                  Ethical Foundation Commitment:
-                </p>
-                <p>
-                  "I hereby affirm my commitment to the benevolent principles and financial solidarity of the Foundation. I intend to contribute regularly to my designated Fund Circle and support zero-interest benevolent micro-capital for community empowerment."
-                </p>
-              </div>
+              <HeartHandshake className="w-5 h-5 text-indigo-500 dark:text-indigo-400 flex-shrink-0 mt-0.5" />
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                "I hereby affirm my commitment to the benevolent principles and financial solidarity of the Foundation. I intend to contribute regularly to my designated Fund Circle and support zero-interest benevolent micro-capital for community empowerment."
+              </p>
             </div>
 
-            <label className="flex items-center space-x-2.5 pt-2 cursor-pointer select-none text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <label className="flex items-center space-x-2.5 pt-1 cursor-pointer select-none text-xs font-semibold text-slate-700 dark:text-slate-300">
               <input
                 type="checkbox"
                 checked={commitmentAccepted}
                 onChange={(e) => setCommitmentAccepted(e.target.checked)}
-                className="rounded border-slate-300 dark:border-slate-700 text-emerald-600 focus:ring-emerald-500"
+                className="rounded border-slate-300 dark:border-slate-700 text-indigo-600 focus:ring-indigo-500"
               />
               <span>Member acknowledges commitment statement (Optional)</span>
             </label>
           </div>
         </Card>
 
-        {/* ==================================================== */}
-        {/* 5. DOCUMENTS (Cloudinary Storage via FastAPI)       */}
-        {/* ==================================================== */}
-        <Card
-          title="5. Documents & Media"
-          subtitle="Optional photos and identification attachments. Uploads are stored securely in Cloudinary."
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        {/* 5. Documents & Media */}
+        <Card title="5. Documents & Media">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Member Photo */}
-            <div className="space-y-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/70 dark:border-slate-700/50 flex flex-col items-center text-center">
+            <div className="space-y-3 p-3.5 sm:p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 flex flex-col items-center text-center">
               <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
                 Member Photo (Optional)
               </span>
 
-              <div className="w-24 h-24 rounded-2xl bg-slate-200 dark:bg-slate-700 overflow-hidden flex items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-600">
+              <div className="w-24 h-24 rounded-xl bg-slate-200 dark:bg-slate-700 overflow-hidden flex items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-600">
                 {photoPreview ? (
                   <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
                 ) : (
@@ -736,12 +648,12 @@ export const AddMemberPage: React.FC = () => {
             </div>
 
             {/* Signature */}
-            <div className="space-y-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/70 dark:border-slate-700/50 flex flex-col items-center text-center">
+            <div className="space-y-3 p-3.5 sm:p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 flex flex-col items-center text-center">
               <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
                 Signature (Optional)
               </span>
 
-              <div className="w-24 h-24 rounded-2xl bg-slate-200 dark:bg-slate-700 overflow-hidden flex items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-600">
+              <div className="w-24 h-24 rounded-xl bg-slate-200 dark:bg-slate-700 overflow-hidden flex items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-600">
                 {signaturePreview ? (
                   <img src={signaturePreview} alt="Signature" className="w-full h-full object-contain p-2" />
                 ) : (
@@ -768,8 +680,8 @@ export const AddMemberPage: React.FC = () => {
               </Button>
             </div>
 
-            {/* Document (NID / Birth Certificate) */}
-            <div className="space-y-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/70 dark:border-slate-700/50 flex flex-col justify-between">
+            {/* Identity Document */}
+            <div className="space-y-3 p-3.5 sm:p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
               <div className="space-y-2.5">
                 <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider block text-center">
                   Identity Document (Optional)
@@ -816,14 +728,9 @@ export const AddMemberPage: React.FC = () => {
           </div>
         </Card>
 
-        {/* ==================================================== */}
-        {/* 6. ADDITIONAL INFORMATION                           */}
-        {/* ==================================================== */}
-        <Card
-          title="6. Additional Information"
-          subtitle="Permanently visible administrative notes and joining motivation (Optional)."
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {/* 6. Additional Information */}
+        <Card title="6. Additional Information">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Textarea
               label="Reason for Joining (Optional)"
               placeholder="e.g. Aspiring to participate in community welfare and mutual fund support..."
@@ -841,7 +748,7 @@ export const AddMemberPage: React.FC = () => {
         </Card>
 
         {/* Form Action Controls */}
-        <div className="flex items-center justify-between pt-6 border-t border-slate-200 dark:border-slate-800">
+        <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
           <Button
             type="button"
             variant="outline"
@@ -854,11 +761,10 @@ export const AddMemberPage: React.FC = () => {
           <Button
             type="submit"
             variant="primary"
-            size="lg"
             isLoading={saving}
-            leftIcon={<UserPlus className="w-5 h-5" />}
+            leftIcon={<UserPlus className="w-4 h-4" />}
           >
-            {uploadingDocs ? 'Uploading & Enrolling Member...' : 'Save & Enrol Member'}
+            {uploadingDocs ? 'Enrolling Member...' : 'Save & Enrol Member'}
           </Button>
         </div>
       </form>

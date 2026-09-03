@@ -45,7 +45,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
         );
       case 'sidebar':
         return (
-          <div className={`w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-black shadow-lg shadow-violet-500/30 flex-shrink-0 ${className}`}>
+          <div className={`w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-black text-xs sm:text-sm lg:text-base shadow-md shadow-violet-500/25 flex-shrink-0 ${className}`}>
             {initial}
           </div>
         );
@@ -95,7 +95,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
             src={activeLogoUrl}
             alt={name}
             onError={() => setImageError(true)}
-            className={`h-8 sm:h-9 w-auto max-w-[120px] max-h-9 object-contain bg-transparent border-0 outline-none shadow-none flex-shrink-0 ${className} ${imageClassName}`}
+            className={`h-7 sm:h-8 lg:h-9 w-auto max-w-[100px] sm:max-w-[120px] max-h-9 object-contain bg-transparent border-0 outline-none shadow-none flex-shrink-0 ${className} ${imageClassName}`}
           />
         );
       case 'login':
@@ -113,7 +113,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
             src={activeLogoUrl}
             alt={name}
             onError={() => setImageError(true)}
-            className={`h-8 sm:h-10 md:h-11 max-h-11 w-auto max-w-[130px] sm:max-w-[170px] md:max-w-[210px] object-contain bg-transparent border-0 outline-none shadow-none flex-shrink-0 group-hover:scale-105 transition-transform ${className} ${imageClassName}`}
+            className={`h-7 sm:h-9 md:h-10 w-auto max-w-[120px] sm:max-w-[140px] md:max-w-[160px] max-h-10 object-contain bg-transparent border-0 outline-none shadow-none flex-shrink-0 group-hover:scale-105 transition-transform ${className} ${imageClassName}`}
           />
         );
       case 'footer':
@@ -134,13 +134,14 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
             className={`max-h-full max-w-full object-contain bg-transparent border-0 outline-none shadow-none ${className} ${imageClassName}`}
           />
         );
+      case 'navbar':
       default:
         return (
           <img
             src={activeLogoUrl}
             alt={name}
             onError={() => setImageError(true)}
-            className={`h-8 max-h-8 w-auto max-w-[140px] object-contain bg-transparent border-0 outline-none shadow-none flex-shrink-0 ${className} ${imageClassName}`}
+            className={`h-7 sm:h-8 w-auto max-w-[100px] sm:max-w-[120px] max-h-8 object-contain bg-transparent border-0 outline-none shadow-none flex-shrink-0 ${className} ${imageClassName}`}
           />
         );
     }
@@ -155,13 +156,13 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
   // Composed presentation with typography
   if (variant === 'sidebar') {
     return (
-      <div className="flex items-center gap-3 min-w-0">
+      <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
         {hasValidImage ? renderImage() : renderFallbackIcon()}
         <div className="min-w-0">
-          <h1 className="text-[15px] font-bold text-slate-800 dark:text-white tracking-tight leading-snug truncate">
+          <h1 className="text-[13.5px] sm:text-[14.5px] lg:text-[15px] font-bold text-slate-800 dark:text-white tracking-tight leading-snug truncate">
             {name}
           </h1>
-          <p className="text-[0.65rem] text-indigo-500/70 dark:text-indigo-400/80 font-medium tracking-wide truncate">
+          <p className="text-[0.6rem] sm:text-[0.625rem] lg:text-[0.65rem] text-indigo-500/70 dark:text-indigo-400/80 font-medium tracking-wide truncate">
             Management System
           </p>
         </div>

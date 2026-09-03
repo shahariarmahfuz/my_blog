@@ -463,7 +463,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       aria-label="Sidebar"
     >
       {/* Brand Header */}
-      <div className="logo-area flex items-center justify-between gap-3 px-5 py-4 relative z-10">
+      <div className="logo-area flex items-center justify-between gap-2.5 px-3.5 py-2.5 sm:px-4 sm:py-3 lg:px-5 lg:py-3.5 relative z-10">
         <BrandLogo variant={isCollapsed ? 'sidebar-collapsed' : 'sidebar'} />
         <button
           id="drawerCloseBtn"
@@ -471,12 +471,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
           aria-label="Close navigation menu"
           onClick={onCloseMobile}
         >
-          <X className="w-5 h-5 text-slate-500 hover:text-slate-800" />
+          <X className="w-4 h-4 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white" />
         </button>
       </div>
 
       {/* Navigation Sections */}
-      <nav className="flex-1 overflow-y-auto scrollbar py-2 px-3 relative z-10" aria-label="Main navigation">
+      <nav className="flex-1 overflow-y-auto scrollbar py-1 px-2 sm:px-2.5 lg:py-2 lg:px-3 relative z-10" aria-label="Main navigation">
         {sections.map((sectionName) => {
           const sectionItems = navItems.filter(
             (item) =>
@@ -518,9 +518,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         onClick={() => handleToggleMenu(item.key)}
                         aria-expanded={isExpanded}
                         aria-controls={`sub-${item.key}`}
-                        className="menu-title justify-between px-3"
+                        className="menu-title justify-between px-2.5 sm:px-3"
                       >
-                        <span className="flex items-center gap-3 min-w-0">
+                        <span className="flex items-center gap-2.5 sm:gap-3 min-w-0">
                           <span className="w-5 text-center flex-shrink-0 flex items-center justify-center">
                             {item.icon}
                           </span>
@@ -531,7 +531,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         {!isCollapsed && (
                           <ChevronDown
                             className={`w-3.5 h-3.5 text-slate-400 chevron-icon opacity-60 ${
-                              isExpanded ? 'rotate-180 opacity-100 text-indigo-600' : ''
+                              isExpanded ? 'rotate-180 opacity-100 text-indigo-600 dark:text-indigo-400' : ''
                             }`}
                           />
                         )}
@@ -546,7 +546,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           {visibleChildren.map((subItem, idx) => (
                             <React.Fragment key={subItem.path || idx}>
                               {subItem.sectionHeader && (
-                                <div className="pt-2.5 pb-1 px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-1.5 first:mt-0 first:pt-0.5">
+                                <div className="pt-1.5 pb-0.5 px-2.5 text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-1 first:mt-0 first:pt-0.5">
                                   {subItem.sectionHeader}
                                 </div>
                               )}
@@ -583,7 +583,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       to={item.path || '#'}
                       onClick={handleLinkClick}
                       className={({ isActive }) =>
-                        `menu-title gap-3 px-3 ${isActive ? 'active' : ''}`
+                        `menu-title gap-2.5 sm:gap-3 px-2.5 sm:px-3 ${isActive ? 'active' : ''}`
                       }
                     >
                       <span className="w-5 text-center flex-shrink-0 flex items-center justify-center">
@@ -600,10 +600,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </nav>
 
       {/* Footer */}
-      <div className="sidebar-footer px-4 py-3 relative z-10">
+      <div className="sidebar-footer px-3.5 py-2 sm:px-4 sm:py-2.5 lg:px-4 lg:py-3 relative z-10">
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50 animate-pulse"></div>
-          <p className="text-[0.65rem] text-slate-400">© 2026 Foundation • v1.0</p>
+          <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50 animate-pulse"></div>
+          <p className="text-[0.625rem] text-slate-400 dark:text-slate-500">© 2026 Foundation • v1.0</p>
         </div>
       </div>
     </aside>

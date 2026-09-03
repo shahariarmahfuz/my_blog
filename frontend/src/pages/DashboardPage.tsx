@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { dashboardApi } from '../api/client';
 import { DashboardMetrics } from '../types';
+import { DashboardKpiCard } from '../components/dashboard/DashboardKpiCard';
 import {
   Building2,
   Users2,
@@ -12,7 +13,6 @@ import {
   Clock,
   UserCheck,
   ClipboardList,
-  ArrowRight,
   Gift,
   Coins,
   Receipt,
@@ -59,94 +59,62 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-6 pb-12">
-      {/* ══════════════ TOP STATS CARDS (ROW 1) ══════════════ */}
+      {/* ══════════════ TOP STATS CARDS (ROW 1 - FINANCIAL OVERVIEW) ══════════════ */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         {/* 1. Total Contributions */}
-        <div
+        <DashboardKpiCard
+          title="Total Contributions"
+          value={formatCurrency(metrics.total_contributions)}
+          subtitle="All Member Contributions"
+          icon={<Coins className="w-6 h-6" />}
+          iconGradient="from-emerald-400 to-emerald-600"
+          accentCircleColor="bg-emerald-100"
+          badgeText="Member"
+          badgeStyle="bg-emerald-100 text-emerald-700"
+          badgeIcon={<TrendingUp className="w-3 h-3" />}
           onClick={() => navigate('/app/contributions')}
-          className="card-hover bg-white rounded-2xl p-5 shadow-sm border border-slate-100 relative overflow-hidden cursor-pointer"
-        >
-          <div className="absolute -right-6 -top-6 w-24 h-24 bg-emerald-100 rounded-full opacity-60 pointer-events-none"></div>
-          <div className="flex items-center justify-between mb-3 relative">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white shadow-lg">
-              <Coins className="w-6 h-6" />
-            </div>
-            <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full font-semibold flex items-center gap-1">
-              <TrendingUp className="w-3 h-3" />
-              Member
-            </span>
-          </div>
-          <p className="text-sm text-slate-500 mb-1">Total Contributions</p>
-          <h3 className="text-2xl font-bold text-slate-800">
-            {formatCurrency(metrics.total_contributions)}
-          </h3>
-          <p className="text-xs text-slate-400 mt-1">All Member Contributions</p>
-        </div>
+        />
 
         {/* 2. Total Donations */}
-        <div
+        <DashboardKpiCard
+          title="Total Donations"
+          value={formatCurrency(metrics.total_donations ?? 0)}
+          subtitle="All Received Donations"
+          icon={<Gift className="w-6 h-6" />}
+          iconGradient="from-blue-400 to-blue-600"
+          accentCircleColor="bg-blue-100"
+          badgeText="Direct"
+          badgeStyle="bg-blue-100 text-blue-700"
+          badgeIcon={<TrendingUp className="w-3 h-3" />}
           onClick={() => navigate('/app/donations')}
-          className="card-hover bg-white rounded-2xl p-5 shadow-sm border border-slate-100 relative overflow-hidden cursor-pointer"
-        >
-          <div className="absolute -right-6 -top-6 w-24 h-24 bg-blue-100 rounded-full opacity-60 pointer-events-none"></div>
-          <div className="flex items-center justify-between mb-3 relative">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white shadow-lg">
-              <Gift className="w-6 h-6" />
-            </div>
-            <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-semibold flex items-center gap-1">
-              <TrendingUp className="w-3 h-3" />
-              Direct
-            </span>
-          </div>
-          <p className="text-sm text-slate-500 mb-1">Total Donations</p>
-          <h3 className="text-2xl font-bold text-slate-800">
-            {formatCurrency(metrics.total_donations ?? 0)}
-          </h3>
-          <p className="text-xs text-slate-400 mt-1">All Received Donations</p>
-        </div>
+        />
 
         {/* 3. Assistance Provided */}
-        <div
+        <DashboardKpiCard
+          title="Assistance Provided"
+          value={formatCurrency(totalAssistanceDisbursed)}
+          subtitle="Total Assistance Disbursed"
+          icon={<HeartHandshake className="w-6 h-6" />}
+          iconGradient="from-amber-400 to-amber-600"
+          accentCircleColor="bg-amber-100"
+          badgeText="Aid"
+          badgeStyle="bg-amber-100 text-amber-700"
+          badgeIcon={<TrendingUp className="w-3 h-3" />}
           onClick={() => navigate('/app/assistance')}
-          className="card-hover bg-white rounded-2xl p-5 shadow-sm border border-slate-100 relative overflow-hidden cursor-pointer"
-        >
-          <div className="absolute -right-6 -top-6 w-24 h-24 bg-amber-100 rounded-full opacity-60 pointer-events-none"></div>
-          <div className="flex items-center justify-between mb-3 relative">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white shadow-lg">
-              <HeartHandshake className="w-6 h-6" />
-            </div>
-            <span className="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-full font-semibold flex items-center gap-1">
-              <TrendingUp className="w-3 h-3" />
-              Aid
-            </span>
-          </div>
-          <p className="text-sm text-slate-500 mb-1">Assistance Provided</p>
-          <h3 className="text-2xl font-bold text-slate-800">
-            {formatCurrency(totalAssistanceDisbursed)}
-          </h3>
-          <p className="text-xs text-slate-400 mt-1">Total Assistance Disbursed</p>
-        </div>
+        />
 
         {/* 4. Qard Hasan Due */}
-        <div
+        <DashboardKpiCard
+          title="Qard Hasan Due"
+          value={formatCurrency(metrics.outstanding_qard_hasan)}
+          subtitle="Outstanding Qard Hasan"
+          icon={<HandCoins className="w-6 h-6" />}
+          iconGradient="from-rose-400 to-rose-600"
+          accentCircleColor="bg-rose-100"
+          badgeText="Principal"
+          badgeStyle="bg-rose-100 text-rose-700"
           onClick={() => navigate('/app/assistance/qard-hasan/repayments')}
-          className="card-hover bg-white rounded-2xl p-5 shadow-sm border border-slate-100 relative overflow-hidden cursor-pointer"
-        >
-          <div className="absolute -right-6 -top-6 w-24 h-24 bg-rose-100 rounded-full opacity-60 pointer-events-none"></div>
-          <div className="flex items-center justify-between mb-3 relative">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center text-white shadow-lg">
-              <HandCoins className="w-6 h-6" />
-            </div>
-            <span className="text-xs bg-rose-100 text-rose-700 px-2 py-1 rounded-full font-semibold">
-              Principal
-            </span>
-          </div>
-          <p className="text-sm text-slate-500 mb-1">Qard Hasan Due</p>
-          <h3 className="text-2xl font-bold text-slate-800">
-            {formatCurrency(metrics.outstanding_qard_hasan)}
-          </h3>
-          <p className="text-xs text-slate-400 mt-1">Outstanding Qard Hasan</p>
-        </div>
+        />
       </div>
 
       {/* ══════════════ SECOND ROW CARDS (ROW 2 - VIBRANT GRADIENTS) ══════════════ */}
@@ -154,7 +122,7 @@ export const DashboardPage: React.FC = () => {
         {/* 1. Due Contributions */}
         <div
           onClick={() => navigate('/app/contributions/due')}
-          className="card-hover bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl p-5 shadow-lg text-white relative overflow-hidden cursor-pointer"
+          className="card-hover bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl p-5 shadow-lg text-white relative overflow-hidden cursor-pointer flex flex-col justify-between"
         >
           <Clock className="w-24 h-24 absolute -right-2 -bottom-2 text-white/10 pointer-events-none" />
           <div className="flex items-center justify-between mb-3">
@@ -162,17 +130,19 @@ export const DashboardPage: React.FC = () => {
               <Clock className="w-6 h-6 text-white" />
             </div>
           </div>
-          <p className="text-sm text-white/80 mb-1">Due Contributions</p>
-          <h3 className="text-2xl font-bold text-white">
-            {formatCurrency(metrics.total_due_contributions ?? 0)}
-          </h3>
-          <p className="text-xs text-white/70 mt-1">Pending Member Dues</p>
+          <div>
+            <p className="text-sm text-white/80 mb-1 truncate">Due Contributions</p>
+            <h3 className="text-2xl font-bold text-white tracking-tight truncate">
+              {formatCurrency(metrics.total_due_contributions ?? 0)}
+            </h3>
+            <p className="text-xs text-white/70 mt-1 truncate">Pending Member Dues</p>
+          </div>
         </div>
 
         {/* 2. Fund Balance */}
         <div
           onClick={() => navigate('/app/groups')}
-          className="card-hover bg-gradient-to-br from-teal-500 to-green-600 rounded-2xl p-5 shadow-lg text-white relative overflow-hidden cursor-pointer"
+          className="card-hover bg-gradient-to-br from-teal-500 to-green-600 rounded-2xl p-5 shadow-lg text-white relative overflow-hidden cursor-pointer flex flex-col justify-between"
         >
           <Wallet className="w-24 h-24 absolute -right-2 -bottom-2 text-white/10 pointer-events-none" />
           <div className="flex items-center justify-between mb-3">
@@ -180,17 +150,19 @@ export const DashboardPage: React.FC = () => {
               <Wallet className="w-6 h-6 text-white" />
             </div>
           </div>
-          <p className="text-sm text-white/80 mb-1">Fund Balance</p>
-          <h3 className="text-2xl font-bold text-white">
-            {formatCurrency(metrics.total_available_funds)}
-          </h3>
-          <p className="text-xs text-white/70 mt-1">Current Foundation Fund</p>
+          <div>
+            <p className="text-sm text-white/80 mb-1 truncate">Fund Balance</p>
+            <h3 className="text-2xl font-bold text-white tracking-tight truncate">
+              {formatCurrency(metrics.total_available_funds)}
+            </h3>
+            <p className="text-xs text-white/70 mt-1 truncate">Current Foundation Fund</p>
+          </div>
         </div>
 
         {/* 3. Group Fund */}
         <div
           onClick={() => navigate('/app/groups')}
-          className="card-hover bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl p-5 shadow-lg text-white relative overflow-hidden cursor-pointer"
+          className="card-hover bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl p-5 shadow-lg text-white relative overflow-hidden cursor-pointer flex flex-col justify-between"
         >
           <Building2 className="w-24 h-24 absolute -right-2 -bottom-2 text-white/10 pointer-events-none" />
           <div className="flex items-center justify-between mb-3">
@@ -198,19 +170,21 @@ export const DashboardPage: React.FC = () => {
               <Building2 className="w-6 h-6 text-white" />
             </div>
           </div>
-          <p className="text-sm text-white/80 mb-1">Group Fund</p>
-          <h3 className="text-2xl font-bold text-white">
-            {formatCurrency(metrics.total_group_funds ?? metrics.total_available_funds)}
-          </h3>
-          <p className="text-xs text-white/70 mt-1">
-            {metrics.total_groups} Active Fund Cohorts
-          </p>
+          <div>
+            <p className="text-sm text-white/80 mb-1 truncate">Group Fund</p>
+            <h3 className="text-2xl font-bold text-white tracking-tight truncate">
+              {formatCurrency(metrics.total_group_funds ?? metrics.total_available_funds)}
+            </h3>
+            <p className="text-xs text-white/70 mt-1 truncate">
+              {metrics.total_groups} Active Fund Cohorts
+            </p>
+          </div>
         </div>
 
-        {/* 4. Expenses / Sadaqah Outflows */}
+        {/* 4. Expenses / Operations */}
         <div
           onClick={() => navigate('/app/assistance/sadaqah/manage')}
-          className="card-hover bg-gradient-to-br from-slate-700 to-slate-900 rounded-2xl p-5 shadow-lg text-white relative overflow-hidden cursor-pointer"
+          className="card-hover bg-gradient-to-br from-slate-700 to-slate-900 rounded-2xl p-5 shadow-lg text-white relative overflow-hidden cursor-pointer flex flex-col justify-between"
         >
           <Receipt className="w-24 h-24 absolute -right-2 -bottom-2 text-white/10 pointer-events-none" />
           <div className="flex items-center justify-between mb-3">
@@ -218,72 +192,59 @@ export const DashboardPage: React.FC = () => {
               <Receipt className="w-6 h-6 text-white" />
             </div>
           </div>
-          <p className="text-sm text-white/80 mb-1">Expenses &amp; Sadaqah</p>
-          <h3 className="text-2xl font-bold text-white">
-            {formatCurrency(metrics.total_sadaqah_disbursed)}
-          </h3>
-          <p className="text-xs text-white/70 mt-1">Non-Recoverable Aid Grants</p>
+          <div>
+            <p className="text-sm text-white/80 mb-1 truncate">Expenses &amp; Sadaqah</p>
+            <h3 className="text-2xl font-bold text-white tracking-tight truncate">
+              {formatCurrency(metrics.total_sadaqah_disbursed)}
+            </h3>
+            <p className="text-xs text-white/70 mt-1 truncate">Non-Recoverable Aid Grants</p>
+          </div>
         </div>
       </div>
 
-      {/* ══════════════ ORGANIZATIONAL METRICS (ROW 3) ══════════════ */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
-        {/* Total Members */}
-        <div
+      {/* ══════════════ ORGANIZATIONAL METRICS (ROW 3 - MASTER CARD SYSTEM) ══════════════ */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+        {/* 1. Total Members */}
+        <DashboardKpiCard
+          title="Total Members"
+          value={metrics.total_members}
+          subtitle="Contributing Foundation Members"
+          icon={<Users2 className="w-6 h-6" />}
+          iconGradient="from-indigo-500 to-purple-600"
+          accentCircleColor="bg-indigo-100"
+          badgeText="Active"
+          badgeStyle="bg-indigo-100 text-indigo-700"
+          badgeIcon={<Users2 className="w-3 h-3" />}
           onClick={() => navigate('/app/members/manage')}
-          className="card-hover bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex items-center justify-between cursor-pointer"
-        >
-          <div>
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-              Total Members
-            </p>
-            <h4 className="text-2xl font-black text-slate-800 mt-1">
-              {metrics.total_members}
-            </h4>
-            <p className="text-xs text-slate-400 mt-0.5">Contributing Foundation Members</p>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center flex-shrink-0">
-            <Users2 className="w-6 h-6" />
-          </div>
-        </div>
+        />
 
-        {/* Total Beneficiaries */}
-        <div
+        {/* 2. Total Beneficiaries */}
+        <DashboardKpiCard
+          title="Total Beneficiaries"
+          value={metrics.total_beneficiaries}
+          subtitle="Assistance Recipients on Record"
+          icon={<UserCheck className="w-6 h-6" />}
+          iconGradient="from-teal-400 to-teal-600"
+          accentCircleColor="bg-teal-100"
+          badgeText="Recipients"
+          badgeStyle="bg-teal-100 text-teal-700"
+          badgeIcon={<UserCheck className="w-3 h-3" />}
           onClick={() => navigate('/app/beneficiaries/manage')}
-          className="card-hover bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex items-center justify-between cursor-pointer"
-        >
-          <div>
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-              Total Beneficiaries
-            </p>
-            <h4 className="text-2xl font-black text-slate-800 mt-1">
-              {metrics.total_beneficiaries}
-            </h4>
-            <p className="text-xs text-slate-400 mt-0.5">Assistance Recipients on Record</p>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0">
-            <UserCheck className="w-6 h-6" />
-          </div>
-        </div>
+        />
 
-        {/* Pending Applications */}
-        <div
+        {/* 3. Pending Applications */}
+        <DashboardKpiCard
+          title="Pending Applications"
+          value={metrics.pending_member_applications ?? 0}
+          subtitle="Public Member Submissions"
+          icon={<ClipboardList className="w-6 h-6" />}
+          iconGradient="from-amber-400 to-amber-600"
+          accentCircleColor="bg-amber-100"
+          badgeText="Review"
+          badgeStyle="bg-amber-100 text-amber-700"
+          badgeIcon={<ClipboardList className="w-3 h-3" />}
           onClick={() => navigate('/app/members/applications')}
-          className="card-hover bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex items-center justify-between cursor-pointer"
-        >
-          <div>
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-              Pending Applications
-            </p>
-            <h4 className="text-2xl font-black text-slate-800 mt-1">
-              {metrics.pending_member_applications ?? 0}
-            </h4>
-            <p className="text-xs text-slate-400 mt-0.5">Public Member Submissions</p>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0">
-            <ClipboardList className="w-6 h-6" />
-          </div>
-        </div>
+        />
       </div>
     </div>
   );

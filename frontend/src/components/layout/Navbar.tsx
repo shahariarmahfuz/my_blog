@@ -144,25 +144,25 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <header className="bg-white border-b border-slate-200 px-4 sm:px-6 py-3 flex items-center justify-between shadow-sm gap-3 sticky top-0 z-30">
+    <header className="bg-white border-b border-slate-200 px-3.5 sm:px-6 py-2 sm:py-3 flex items-center justify-between shadow-sm gap-2 sm:gap-3 sticky top-0 z-30">
       {/* Left: Hamburger & Dynamic Page Header */}
-      <div className="flex items-center gap-3 min-w-0">
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
         <button
           id="hamburgerBtn"
           onClick={handleHamburgerClick}
           aria-label="Toggle navigation menu"
-          className="text-slate-600 hover:text-indigo-600 p-2 rounded-lg hover:bg-slate-100 transition flex-shrink-0"
+          className="text-slate-600 hover:text-indigo-600 p-1.5 sm:p-2 rounded-lg hover:bg-slate-100 transition flex-shrink-0 flex items-center justify-center"
         >
           <Menu className="w-5 h-5" />
         </button>
         <div className="min-w-0">
-          <h2 className="text-lg sm:text-xl font-bold text-slate-800 truncate">{title}</h2>
-          <p className="text-xs text-slate-500 truncate hidden sm:block">{subtitle}</p>
+          <h2 className="text-base sm:text-xl font-bold text-slate-800 truncate leading-tight">{title}</h2>
+          <p className="text-xs text-slate-500 truncate hidden sm:block mt-0.5">{subtitle}</p>
         </div>
       </div>
 
       {/* Right: Search & Actions */}
-      <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0">
+      <div className="flex items-center gap-1.5 sm:gap-4 flex-shrink-0">
         {/* Search Bar */}
         <div className="relative hidden md:block">
           <input
@@ -186,7 +186,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Dark / Light Mode toggle */}
         <button
           onClick={toggleTheme}
-          className="p-2 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-slate-100 transition-colors"
+          className="p-1.5 sm:p-2 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-slate-100 transition-colors flex items-center justify-center"
           title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
         >
           {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-500" />}
@@ -196,7 +196,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="flex items-center gap-3 hover:bg-slate-100 p-1.5 pr-2 sm:pr-3 rounded-lg transition"
+            className="flex items-center gap-2 sm:gap-3 hover:bg-slate-100 p-1 sm:p-1.5 pr-1.5 sm:pr-3 rounded-lg transition"
             aria-expanded={dropdownOpen}
             aria-haspopup="true"
           >
@@ -204,10 +204,10 @@ export const Navbar: React.FC<NavbarProps> = ({
               <img
                 src={user.profile_picture}
                 alt={user.full_name}
-                className="w-9 h-9 rounded-full object-cover shadow-md flex-shrink-0"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover shadow-sm flex-shrink-0"
               />
             ) : (
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-md flex-shrink-0">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-xs sm:text-sm shadow-sm flex-shrink-0">
                 {getInitials(user?.full_name)}
               </div>
             )}
@@ -227,7 +227,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {dropdownOpen && (
             <div
               id="userDropdown"
-              className="user-dropdown show absolute right-0 top-full mt-2 w-60 bg-white rounded-xl shadow-2xl border border-slate-100 overflow-hidden z-50 animate-fadeIn"
+              className="user-dropdown show absolute right-0 top-full mt-1.5 sm:mt-2 w-60 bg-white rounded-xl shadow-2xl border border-slate-100 overflow-hidden z-50 animate-fadeIn"
             >
               {/* Dropdown Header */}
               <div className="px-4 py-3 bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-slate-100">

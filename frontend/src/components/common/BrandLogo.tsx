@@ -158,10 +158,10 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       <div className="flex items-center gap-3 min-w-0">
         {hasValidImage ? renderImage() : renderFallbackIcon()}
         <div className="min-w-0">
-          <h1 className="text-[15px] font-bold text-slate-800 tracking-tight leading-snug truncate">
+          <h1 className="text-[15px] font-bold text-slate-800 dark:text-white tracking-tight leading-snug truncate">
             {name}
           </h1>
-          <p className="text-[0.65rem] text-indigo-500/70 font-medium tracking-wide truncate">
+          <p className="text-[0.65rem] text-indigo-500/70 dark:text-indigo-400/80 font-medium tracking-wide truncate">
             Management System
           </p>
         </div>

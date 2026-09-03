@@ -11,6 +11,10 @@ export default {
         sans: ['Inter', 'sans-serif'],
       },
       colors: {
+        slate: {
+          750: '#233044',
+          850: '#151e2e',
+        },
         brand: {
           50: '#ecfdf5',
           100: '#d1fae5',

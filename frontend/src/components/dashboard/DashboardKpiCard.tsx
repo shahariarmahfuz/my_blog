@@ -22,7 +22,7 @@ export const DashboardKpiCard: React.FC<DashboardKpiCardProps> = ({
   iconGradient,
   accentCircleColor,
   badgeText,
-  badgeStyle = 'bg-slate-100 text-slate-700',
+  badgeStyle = 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300',
   badgeIcon,
   onClick,
   className = '',
@@ -30,13 +30,13 @@ export const DashboardKpiCard: React.FC<DashboardKpiCardProps> = ({
   return (
     <div
       onClick={onClick}
-      className={`card-hover bg-white rounded-2xl p-5 shadow-sm border border-slate-100 relative overflow-hidden flex flex-col justify-between transition-all duration-200 ${
+      className={`card-hover bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-800 relative overflow-hidden flex flex-col justify-between transition-all duration-200 ${
         onClick ? 'cursor-pointer' : ''
       } ${className}`}
     >
       {/* Decorative soft circle background accent */}
       <div
-        className={`absolute -right-6 -top-6 w-24 h-24 ${accentCircleColor} rounded-full opacity-60 pointer-events-none`}
+        className={`absolute -right-6 -top-6 w-24 h-24 ${accentCircleColor} rounded-full opacity-60 dark:opacity-15 pointer-events-none`}
         aria-hidden="true"
       />
 
@@ -59,11 +59,11 @@ export const DashboardKpiCard: React.FC<DashboardKpiCardProps> = ({
 
       {/* Content area: Title, Main Numeric Value, and Subtitle */}
       <div>
-        <p className="text-sm text-slate-500 mb-1 truncate">{title}</p>
-        <h3 className="text-2xl font-bold text-slate-800 tracking-tight truncate">
+        <p className="text-sm text-slate-500 dark:text-slate-400 mb-1 truncate">{title}</p>
+        <h3 className="text-2xl font-bold text-slate-800 dark:text-white tracking-tight truncate">
           {value}
         </h3>
-        <p className="text-xs text-slate-400 mt-1 truncate">{subtitle}</p>
+        <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 truncate">{subtitle}</p>
       </div>
     </div>
   );

@@ -9,7 +9,6 @@ import { Card } from '../components/ui/Card';
 import { useToast } from '../context/ToastContext';
 import {
   FolderPlus,
-  Building2,
   CheckCircle2,
   ArrowRight,
   FileSpreadsheet,
@@ -93,34 +92,21 @@ export const AddGroupPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-3xl mx-auto space-y-5">
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
-            <FolderPlus className="w-7 h-7 text-emerald-500" />
-            <span>Add New Fund Group</span>
-          </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Establish a distinct accounting and fund management group. <b>Only Group Name is required.</b>
-          </p>
-        </div>
-
-        <Button
-          variant="outline"
-          onClick={() => navigate('/app/groups/manage')}
-          leftIcon={<Building2 className="w-4 h-4" />}
-        >
-          View All Groups
-        </Button>
+      <div>
+        <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2.5">
+          <FolderPlus className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-500 dark:text-indigo-400" />
+          <span>Add New Fund Group</span>
+        </h1>
       </div>
 
       {/* Success Notification Banner */}
       {createdGroupId && (
-        <div className="p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fadeIn">
+        <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-fadeIn">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center text-white flex-shrink-0 shadow-md shadow-emerald-500/30">
-              <CheckCircle2 className="w-6 h-6" />
+            <div className="w-9 h-9 rounded-full bg-emerald-500 flex items-center justify-center text-white flex-shrink-0 shadow-md shadow-emerald-500/30">
+              <CheckCircle2 className="w-5 h-5" />
             </div>
             <div>
               <h4 className="font-bold text-emerald-950 dark:text-emerald-200 text-sm">
@@ -136,7 +122,7 @@ export const AddGroupPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 flex-shrink-0">
             <Button
               size="sm"
               variant="outline"
@@ -150,7 +136,7 @@ export const AddGroupPage: React.FC = () => {
               onClick={() => navigate(`/app/groups/ledger?group_id=${createdGroupId}`)}
               leftIcon={<FileSpreadsheet className="w-3.5 h-3.5" />}
             >
-              Group Ledger
+              Ledger
             </Button>
             <Button
               size="sm"
@@ -158,122 +144,98 @@ export const AddGroupPage: React.FC = () => {
               onClick={() => navigate(`/app/groups/fund?group_id=${createdGroupId}`)}
               rightIcon={<ArrowRight className="w-3.5 h-3.5" />}
             >
-              Group Fund
+              Fund
             </Button>
           </div>
         </div>
       )}
 
       {/* Group Creation Form Card */}
-      <Card
-        title="Group Creation Form"
-        subtitle="Minimal required fields philosophy: Enter the Group Name to create instantly."
-      >
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Primary Details */}
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="sm:col-span-2">
-                <Input
-                  label="Group Name *"
-                  placeholder="e.g. General Welfare Fund, General Donation Fund"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                  autoFocus
-                />
-                <p className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 font-medium">
-                  * Required: Unique identifier for this accounting/fund group
-                </p>
-              </div>
-
-              <div>
-                <Select
-                  label="Group Type *"
-                  value={groupType}
-                  onChange={(e) => setGroupType(e.target.value as GroupType)}
-                  options={[
-                    { value: 'MEMBER_FUND', label: 'Member Fund Group (Members & Monthly Dues)' },
-                    { value: 'EXTERNAL_FUND', label: 'External Fund Group (External Donations Only)' },
-                  ]}
-                />
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                  {groupType === 'MEMBER_FUND'
-                    ? 'Allows member assignments and recurring monthly contributions.'
-                    : 'Disables member assignment; receives external non-member donations.'}
-                </p>
-              </div>
-
+      <Card title="Group Creation Form">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="sm:col-span-2">
               <Input
-                label="Group Code / ID (Optional)"
-                placeholder="Leave empty to auto-generate (e.g. GRP-001)"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
+                label="Group Name *"
+                placeholder="e.g. General Welfare Fund, Education Fund"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                autoFocus
               />
+            </div>
 
-              <div className="sm:col-span-2 p-4 bg-emerald-50/40 dark:bg-emerald-950/20 rounded-2xl border border-emerald-100 dark:border-emerald-900/40 space-y-3">
-                <div className="flex items-center space-x-2">
-                  <Wallet className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                  <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                    Opening / Previous Balance (Optional)
-                  </h3>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <Input
-                      label="Opening Balance (৳)"
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      placeholder="0.00"
-                      value={openingBalance}
-                      onChange={(e) => setOpeningBalance(e.target.value)}
-                    />
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                      Existing balance carried forward before using this system.
-                    </p>
-                  </div>
+            <div>
+              <Select
+                label="Group Type *"
+                value={groupType}
+                onChange={(e) => setGroupType(e.target.value as GroupType)}
+                options={[
+                  { value: 'MEMBER_FUND', label: 'Member Fund Group (Members & Monthly Dues)' },
+                  { value: 'EXTERNAL_FUND', label: 'External Fund Group (External Donations Only)' },
+                ]}
+              />
+            </div>
 
-                  <div>
-                    <Input
-                      label="Opening Balance Effective Date"
-                      type="date"
-                      value={openingBalanceDate}
-                      onChange={(e) => setOpeningBalanceDate(e.target.value)}
-                    />
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                      Date when the opening balance was effective (defaults to today).
-                    </p>
-                  </div>
-                </div>
+            <Input
+              label="Group Code / ID (Optional)"
+              placeholder="Leave empty to auto-generate (e.g. GRP-001)"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+            />
+
+            <div className="sm:col-span-2 p-3.5 sm:p-4 bg-slate-50/70 dark:bg-slate-800/40 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-3">
+              <div className="flex items-center space-x-2">
+                <Wallet className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
+                <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                  Opening / Previous Balance (Optional)
+                </h3>
               </div>
-
-              <div className="sm:col-span-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Input
-                  label="Physical Address / Area of Operation (Optional)"
-                  placeholder="e.g. Section 10, Mirpur, Dhaka"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
+                  label="Opening Balance (৳)"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  placeholder="0.00"
+                  value={openingBalance}
+                  onChange={(e) => setOpeningBalance(e.target.value)}
                 />
-              </div>
 
-              <div className="sm:col-span-2">
-                <Textarea
-                  label="Group Description & Mandate (Optional)"
-                  placeholder="Describe the mandate, target beneficiaries, or contribution rules of this group..."
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                <Input
+                  label="Opening Balance Effective Date"
+                  type="date"
+                  value={openingBalanceDate}
+                  onChange={(e) => setOpeningBalanceDate(e.target.value)}
                 />
               </div>
+            </div>
 
-              <div className="sm:col-span-2">
-                <Textarea
-                  label="Internal Administrative Notes (Optional)"
-                  placeholder="Any special notes or guidelines..."
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                />
-              </div>
+            <div className="sm:col-span-2">
+              <Input
+                label="Physical Address / Area of Operation (Optional)"
+                placeholder="e.g. Section 10, Mirpur, Dhaka"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+              />
+            </div>
+
+            <div className="sm:col-span-2">
+              <Textarea
+                label="Group Description & Mandate (Optional)"
+                placeholder="Describe the mandate, target beneficiaries, or contribution rules of this group..."
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
+
+            <div className="sm:col-span-2">
+              <Textarea
+                label="Internal Administrative Notes (Optional)"
+                placeholder="Any special notes or guidelines..."
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+              />
             </div>
           </div>
 

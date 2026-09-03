@@ -876,6 +876,9 @@ export interface DashboardMetrics {
   total_members: number;
   total_beneficiaries: number;
   total_contributions: string | number;
+  total_donations?: string | number;
+  total_due_contributions?: string | number;
+  total_group_funds?: string | number;
   total_qard_hasan_disbursed: string | number;
   total_qard_hasan_repaid: string | number;
   outstanding_qard_hasan: string | number;

@@ -1,32 +1,34 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   Menu,
   Sun,
   Moon,
-  Shield,
   User as UserIcon,
   Settings,
   Key,
-  ShieldCheck,
   LogOut,
   ChevronDown,
   Globe,
-  Sparkles
+  Search,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 
 interface NavbarProps {
   onToggleMobileSidebar: () => void;
+  onToggleCollapse?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileSidebar }) => {
-  const { user, logout, hasPermission } = useAuth();
+export const Navbar: React.FC<NavbarProps> = ({
+  onToggleMobileSidebar,
+  onToggleCollapse,
+}) => {
+  const { user, logout } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
+  const location = useLocation();
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -39,13 +41,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileSidebar }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = (e: React.MouseEvent) => {
+    e.preventDefault();
     setDropdownOpen(false);
-    logout();
+    if (window.confirm('Are you sure you want to log out of the Foundation Management System?')) {
+      logout();
+    }
   };
 
   const getInitials = (name?: string) => {
-    if (!name) return 'U';
+    if (!name) return 'A';
     const parts = name.trim().split(' ');
     if (parts.length >= 2) {
       return (parts[0][0] + parts[1][0]).toUpperCase();
@@ -53,43 +58,145 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileSidebar }) => {
     return name.slice(0, 2).toUpperCase();
   };
 
+  // Derive dynamic page title & subtitle based on current route
+  const getPageHeader = () => {
+    const path = location.pathname;
+    if (path === '/app/dashboard' || path === '/app') {
+      return {
+        title: 'Dashboard',
+        subtitle: "Welcome! Today's overall foundation status",
+      };
+    }
+    if (path.startsWith('/app/groups')) {
+      return {
+        title: 'Groups',
+        subtitle: 'Manage fund groups, allocations and utilization',
+      };
+    }
+    if (path.startsWith('/app/members')) {
+      return {
+        title: 'Members',
+        subtitle: 'Manage foundation members, schedules and records',
+      };
+    }
+    if (path.startsWith('/app/beneficiaries')) {
+      return {
+        title: 'Beneficiaries',
+        subtitle: 'Manage aid recipients and assistance profiles',
+      };
+    }
+    if (path.startsWith('/app/contributions')) {
+      return {
+        title: 'Contributions',
+        subtitle: 'Manage member periodic dues and collections',
+      };
+    }
+    if (path.startsWith('/app/donations')) {
+      return {
+        title: 'Donations',
+        subtitle: 'External non-member donations and general fund gifts',
+      };
+    }
+    if (path.startsWith('/app/assistance')) {
+      return {
+        title: 'Assistance',
+        subtitle: 'Qard Hasan micro-credits and Sadaqah relief programs',
+      };
+    }
+    if (path.startsWith('/app/reports')) {
+      return {
+        title: 'Financial Reports',
+        subtitle: 'Financial statements, dues summary, and data exports',
+      };
+    }
+    if (path.startsWith('/app/audit-logs')) {
+      return {
+        title: 'Audit Trail',
+        subtitle: 'System security logs and operational history',
+      };
+    }
+    if (path.startsWith('/app/settings') || path.startsWith('/app/users-roles')) {
+      return {
+        title: 'Settings',
+        subtitle: 'Foundation profile, branding and administrative setup',
+      };
+    }
+    if (path.startsWith('/app/profile') || path.startsWith('/app/account')) {
+      return {
+        title: 'Account Settings',
+        subtitle: 'Manage your administrator credentials and profile',
+      };
+    }
+    return {
+      title: 'Foundation',
+      subtitle: 'Management System',
+    };
+  };
+
+  const { title, subtitle } = getPageHeader();
+
+  const handleHamburgerClick = () => {
+    if (window.innerWidth >= 1024) {
+      if (onToggleCollapse) onToggleCollapse();
+    } else {
+      onToggleMobileSidebar();
+    }
+  };
+
   return (
-    <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-4 sm:px-8 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors duration-200">
-      <div className="flex items-center space-x-4">
+    <header className="bg-white border-b border-slate-200 px-4 sm:px-6 py-3 flex items-center justify-between shadow-sm gap-3 sticky top-0 z-30">
+      {/* Left: Hamburger & Dynamic Page Header */}
+      <div className="flex items-center gap-3 min-w-0">
         <button
-          onClick={onToggleMobileSidebar}
-          className="lg:hidden p-2 rounded-xl text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-          title="Open Menu"
+          id="hamburgerBtn"
+          onClick={handleHamburgerClick}
+          aria-label="Toggle navigation menu"
+          className="text-slate-600 hover:text-indigo-600 p-2 rounded-lg hover:bg-slate-100 transition flex-shrink-0"
         >
           <Menu className="w-5 h-5" />
         </button>
+        <div className="min-w-0">
+          <h2 className="text-lg sm:text-xl font-bold text-slate-800 truncate">{title}</h2>
+          <p className="text-xs text-slate-500 truncate hidden sm:block">{subtitle}</p>
+        </div>
       </div>
 
-      <div className="flex items-center space-x-3">
+      {/* Right: Search & Actions */}
+      <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0">
+        {/* Search Bar */}
+        <div className="relative hidden md:block">
+          <input
+            type="text"
+            placeholder="Search..."
+            className="bg-slate-100 pl-10 pr-4 py-2 rounded-lg text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 w-52 lg:w-64 border-0"
+          />
+          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+        </div>
+
         {/* Public Website quick link */}
         <Link
           to="/"
-          className="hidden md:inline-flex items-center space-x-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg text-slate-600 hover:text-indigo-600 hover:bg-slate-100 transition-colors"
           title="Visit Public Website"
         >
-          <Globe className="w-3.5 h-3.5 text-emerald-500" />
+          <Globe className="w-3.5 h-3.5 text-indigo-500" />
           <span>Public Website</span>
         </Link>
 
         {/* Dark / Light Mode toggle */}
         <button
           onClick={toggleTheme}
-          className="p-2 rounded-xl text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          className="p-2 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-slate-100 transition-colors"
           title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
         >
-          {isDark ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5 text-slate-600" />}
+          {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-500" />}
         </button>
 
-        {/* Clickable User Profile / Avatar Dropdown */}
+        {/* User Profile Dropdown Button */}
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="flex items-center space-x-2.5 p-1 sm:pl-2 sm:pr-3 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all border border-transparent hover:border-slate-200 dark:hover:border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+            className="flex items-center gap-3 hover:bg-slate-100 p-1.5 pr-2 sm:pr-3 rounded-lg transition"
             aria-expanded={dropdownOpen}
             aria-haspopup="true"
           >
@@ -97,109 +204,79 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileSidebar }) => {
               <img
                 src={user.profile_picture}
                 alt={user.full_name}
-                className="w-9 h-9 rounded-full object-cover border-2 border-emerald-500 shadow-sm"
+                className="w-9 h-9 rounded-full object-cover shadow-md flex-shrink-0"
               />
             ) : (
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-500 to-teal-700 text-white flex items-center justify-center font-bold text-xs shadow-md shadow-emerald-500/25">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-md flex-shrink-0">
                 {getInitials(user?.full_name)}
               </div>
             )}
 
             <div className="hidden md:block text-left">
-              <p className="text-xs font-bold text-slate-900 dark:text-white leading-tight truncate max-w-[130px]">
-                {user?.full_name || 'Staff User'}
+              <p className="text-sm font-semibold leading-tight text-slate-800 truncate max-w-[130px]">
+                {user?.full_name || 'Admin'}
               </p>
-              <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold truncate max-w-[130px]">
-                {user?.role?.name || 'Staff'}
+              <p className="text-xs text-slate-500 leading-tight truncate max-w-[130px]">
+                {user?.role?.name || 'Manager'}
               </p>
             </div>
-
-            <ChevronDown
-              className={`w-3.5 h-3.5 text-slate-400 dark:text-slate-500 transition-transform duration-200 hidden sm:block ${
-                dropdownOpen ? 'rotate-180 text-emerald-600 dark:text-emerald-400' : ''
-              }`}
-            />
+            <ChevronDown className="w-3.5 h-3.5 text-slate-400 hidden md:block" />
           </button>
 
-          {/* Profile Popover / Dropdown Menu */}
+          {/* Dropdown Menu */}
           {dropdownOpen && (
-            <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl py-2 z-50 animate-fadeIn divide-y divide-slate-100 dark:divide-slate-800">
-              {/* User Identity Header */}
-              <div className="px-4 py-3 flex items-center space-x-3">
-                {user?.profile_picture ? (
-                  <img
-                    src={user.profile_picture}
-                    alt={user.full_name}
-                    className="w-11 h-11 rounded-full object-cover border-2 border-emerald-500 shadow-sm flex-shrink-0"
-                  />
-                ) : (
-                  <div className="w-11 h-11 rounded-full bg-gradient-to-br from-emerald-500 to-teal-700 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-emerald-500/25 flex-shrink-0">
-                    {getInitials(user?.full_name)}
-                  </div>
-                )}
-                <div className="overflow-hidden">
-                  <h4 className="text-sm font-extrabold text-slate-900 dark:text-white truncate">
-                    {user?.full_name}
-                  </h4>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                    {user?.email}
-                  </p>
-                  <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
-                    {user?.role?.name || 'Staff'}
-                  </span>
-                </div>
+            <div
+              id="userDropdown"
+              className="user-dropdown show absolute right-0 top-full mt-2 w-60 bg-white rounded-xl shadow-2xl border border-slate-100 overflow-hidden z-50 animate-fadeIn"
+            >
+              {/* Dropdown Header */}
+              <div className="px-4 py-3 bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-slate-100">
+                <p className="text-sm font-bold text-slate-800 truncate">
+                  {user?.full_name || 'Admin'}
+                </p>
+                <p className="text-xs text-slate-500 truncate">
+                  {user?.email || user?.username || 'admin@foundation.org'}
+                </p>
               </div>
 
-              {/* Navigation Items */}
-              <div className="py-1.5 px-1.5 space-y-0.5 text-xs font-semibold text-slate-700 dark:text-slate-300">
+              {/* Menu Links */}
+              <div className="py-2">
                 <Link
                   to="/app/profile"
                   onClick={() => setDropdownOpen(false)}
-                  className="flex items-center space-x-3 px-3 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 hover:pl-5 transition-all"
                 >
-                  <UserIcon className="w-4 h-4 text-emerald-500" />
-                  <span>My Profile</span>
+                  <UserIcon className="w-4 h-4 text-indigo-500 flex-shrink-0" />
+                  <span>Member Profile</span>
                 </Link>
 
                 <Link
-                  to="/app/account"
+                  to="/app/settings/general"
                   onClick={() => setDropdownOpen(false)}
-                  className="flex items-center space-x-3 px-3 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 hover:pl-5 transition-all"
                 >
-                  <Settings className="w-4 h-4 text-slate-400" />
-                  <span>Account Settings</span>
+                  <Settings className="w-4 h-4 text-slate-500 flex-shrink-0" />
+                  <span>Settings</span>
                 </Link>
 
                 <Link
                   to="/app/account/change-password"
                   onClick={() => setDropdownOpen(false)}
-                  className="flex items-center space-x-3 px-3 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 hover:pl-5 transition-all"
                 >
-                  <Key className="w-4 h-4 text-amber-500" />
+                  <Key className="w-4 h-4 text-amber-500 flex-shrink-0" />
                   <span>Change Password</span>
                 </Link>
-
-                {/* Users & Roles (Permission-guarded) */}
-                {hasPermission('users.view') && (
-                  <Link
-                    to="/app/users-roles"
-                    onClick={() => setDropdownOpen(false)}
-                    className="flex items-center space-x-3 px-3 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
-                  >
-                    <ShieldCheck className="w-4 h-4 text-indigo-500" />
-                    <span>Users & Roles</span>
-                  </Link>
-                )}
               </div>
 
-              {/* Logout Action */}
-              <div className="py-1.5 px-1.5">
+              {/* Logout */}
+              <div className="border-t border-slate-100 py-2">
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+                  className="w-full text-left flex items-center gap-3 px-4 py-2.5 text-sm text-rose-600 hover:bg-rose-50 font-semibold transition-all"
                 >
-                  <LogOut className="w-4 h-4" />
-                  <span>Sign Out</span>
+                  <LogOut className="w-4 h-4 flex-shrink-0" />
+                  <span>Log Out</span>
                 </button>
               </div>
             </div>

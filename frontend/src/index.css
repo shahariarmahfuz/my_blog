@@ -3,26 +3,274 @@
 @tailwind utilities;
 
 @layer base {
+  * {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  html, body {
+    overflow-x: hidden;
+  }
   body {
-    @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 antialiased selection:bg-emerald-500 selection:text-white;
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f1f5f9;
+    color: #1e293b;
+    @apply antialiased selection:bg-indigo-500 selection:text-white;
   }
 }
 
-/* Custom scrollbars */
-::-webkit-scrollbar {
+/* ══════════════ SIDEBAR SHELL ══════════════ */
+#sidebar {
+  background: linear-gradient(165deg, #ffffff 0%, #f8fafc 45%, #eef2ff 100%);
+  position: relative;
+  flex-shrink: 0;
+}
+#sidebar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 20% 85%, rgba(139,92,246,0.06) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 15%, rgba(99,102,241,0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* ── Desktop: static sidebar ── */
+@media (min-width: 1024px) {
+  #sidebar {
+    width: 18rem;
+    transition: width 0.3s cubic-bezier(.4,0,.2,1);
+    border-right: 1px solid #e2e8f0;
+  }
+  #sidebar.collapsed {
+    width: 0;
+    border-right-color: transparent;
+    overflow: hidden;
+  }
+  #backdrop { display: none; }
+  .drawer-close { display: none; }
+}
+
+/* ── Mobile: fixed drawer ── */
+@media (max-width: 1023.98px) {
+  #sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: min(86vw, 360px);
+    height: 100vh;
+    height: 100dvh;
+    z-index: 60;
+    transform: translateX(-105%);
+    visibility: hidden;
+    transition: transform 0.28s cubic-bezier(.4,0,.2,1), visibility 0s linear 0.28s;
+    border-right: 1px solid #e2e8f0;
+    box-shadow: none;
+    will-change: transform;
+  }
+  body.drawer-open #sidebar {
+    transform: translateX(0);
+    visibility: visible;
+    transition: transform 0.28s cubic-bezier(.4,0,.2,1), visibility 0s;
+    box-shadow: 12px 0 40px rgba(15,23,42,0.18);
+  }
+  #backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 55;
+    background: rgba(15,23,42,0.5);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.28s ease, visibility 0s linear 0.28s;
+  }
+  body.drawer-open #backdrop {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.28s ease, visibility 0s;
+  }
+}
+
+/* ══════════════ BRAND AREA ══════════════ */
+#sidebar .logo-area {
+  background: rgba(255,255,255,0.7);
+  border-bottom: 1px solid #e2e8f0;
+  backdrop-filter: blur(10px);
+}
+.drawer-close {
+  width: 38px; height: 38px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 10px;
+  color: #64748b;
+  transition: background 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
+}
+.drawer-close:hover { background: #f1f5f9; color: #1e293b; }
+.drawer-close:active { background: #e2e8f0; }
+
+/* ══════════════ MENU ══════════════ */
+.section-label {
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(100,116,139,0.62);
+  font-weight: 700;
+  padding: 0.85rem 0.75rem 0.4rem;
+}
+
+.menu-title {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  width: 100%;
+  border-radius: 10px !important;
+  margin-bottom: 2px;
+  transition: background 0.2s ease, color 0.2s ease;
+  color: #475569;
+  font-weight: 500;
+  font-size: 0.875rem;
+  letter-spacing: 0.01em;
+  text-align: left;
+}
+.menu-title:hover { background: #f1f5f9; color: #1e293b; }
+.menu-title:active { background: #e9edf4; }
+.menu-title i:first-child,
+.menu-title svg:first-child,
+.menu-title .nav-icon {
+  font-size: 0.95rem;
+  width: 20px;
+  text-align: center;
+  color: #64748b;
+  opacity: 0.75;
+  transition: color 0.2s ease, opacity 0.2s ease;
+  flex-shrink: 0;
+}
+.menu-title:hover i:first-child,
+.menu-title:hover svg:first-child,
+.menu-title:hover .nav-icon { opacity: 1; color: #6366f1; }
+
+.menu-item.open > .menu-title { color: #312e81; }
+.menu-item.open > .menu-title i:first-child,
+.menu-item.open > .menu-title svg:first-child,
+.menu-item.open > .menu-title .nav-icon { color: #6366f1; opacity: 1; }
+
+/* Active state */
+.menu-item.active > .menu-title,
+.menu-title.active {
+  background: linear-gradient(135deg, rgba(139,92,246,0.14), rgba(99,102,241,0.09)) !important;
+  color: #5b21b6 !important;
+  font-weight: 600;
+  border: 1px solid rgba(139,92,246,0.22);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+}
+.menu-item.active > .menu-title::before,
+.menu-title.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 55%;
+  border-radius: 0 4px 4px 0;
+  background: linear-gradient(180deg, #8b5cf6, #6366f1);
+}
+.menu-item.active > .menu-title i:first-child,
+.menu-item.active > .menu-title svg:first-child,
+.menu-item.active > .menu-title .nav-icon,
+.menu-title.active i:first-child,
+.menu-title.active svg:first-child,
+.menu-title.active .nav-icon { opacity: 1; color: #7c3aed; }
+
+/* Chevron */
+.chevron-icon { transition: transform 0.25s ease; }
+
+/* ══════════════ SUBMENU ══════════════ */
+.submenu {
+  position: relative;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  margin-left: 22px;
+  transition: max-height 0.28s cubic-bezier(.4,0,.2,1), opacity 0.22s ease;
+}
+.submenu.open { max-height: 580px; opacity: 1; }
+.submenu::before {
+  content: '';
+  position: absolute;
+  left: 9px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: linear-gradient(180deg, rgba(139,92,246,0.35), rgba(99,102,241,0.12));
+}
+.submenu a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 6px 10px 6px 26px;
+  font-size: 0.8125rem;
+  color: #64748b;
+  border-radius: 8px;
+  margin: 1px 0;
+  transition: background 0.18s ease, color 0.18s ease, padding-left 0.18s ease;
+}
+.submenu a::before {
+  content: '';
+  position: absolute;
+  left: 6.5px;
+  top: 50%;
+  transform: translateY(-50%);
   width: 6px;
   height: 6px;
+  border-radius: 50%;
+  background: rgba(139,92,246,0.3);
+  transition: background 0.18s ease, box-shadow 0.18s ease;
+}
+.submenu a:hover,
+.submenu a.active {
+  color: #4c1d95;
+  background: rgba(139,92,246,0.07);
+  padding-left: 30px;
+}
+.submenu a:hover::before,
+.submenu a.active::before {
+  background: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(139,92,246,0.12);
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
+/* Focus visibility */
+.menu-title:focus-visible,
+.submenu a:focus-visible,
+.drawer-close:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: -2px;
+  border-radius: 10px;
 }
 
-::-webkit-scrollbar-thumb {
-  @apply bg-slate-300 dark:bg-slate-700 rounded-full;
+/* ══════════════ SCROLLBAR & FOOTER ══════════════ */
+.scrollbar { scrollbar-width: thin; scrollbar-color: rgba(139,92,246,0.3) transparent; }
+.scrollbar::-webkit-scrollbar { width: 4px; }
+.scrollbar::-webkit-scrollbar-track { background: transparent; }
+.scrollbar::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.25); border-radius: 4px; }
+.scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(139,92,246,0.45); }
+
+.sidebar-footer {
+  background: rgba(241,245,249,0.7);
+  border-top: 1px solid #e2e8f0;
+  flex-shrink: 0;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-slate-400 dark:bg-slate-600;
+/* ══════════════ CARDS / DROPDOWN ══════════════ */
+.card-hover { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(0,0,0,0.12); }
+
+.user-dropdown {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.25s ease;
 }
+.user-dropdown.show { opacity: 1; visibility: visible; transform: translateY(0); }
+.user-dropdown a { transition: all 0.2s ease; }
+.user-dropdown a:hover { background: #f1f5f9; padding-left: 1.25rem; }

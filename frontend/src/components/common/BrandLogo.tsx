@@ -39,37 +39,37 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
     switch (variant) {
       case 'sidebar-collapsed':
         return (
-          <div className={`w-9 h-9 mx-auto rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white font-black shadow-md shadow-emerald-500/30 ${className}`}>
+          <div className={`w-10 h-10 mx-auto rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-black shadow-lg shadow-violet-500/30 ${className}`}>
             {initial}
           </div>
         );
       case 'sidebar':
         return (
-          <div className={`w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white font-black shadow-md shadow-emerald-500/30 flex-shrink-0 ${className}`}>
+          <div className={`w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-black shadow-lg shadow-violet-500/30 flex-shrink-0 ${className}`}>
             {initial}
           </div>
         );
       case 'login':
         return (
-          <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 text-white font-extrabold text-2xl shadow-xl shadow-emerald-500/20 flex items-center justify-center ${className}`}>
+          <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 text-white font-extrabold text-2xl shadow-xl shadow-violet-500/20 flex items-center justify-center ${className}`}>
             {initial}
           </div>
         );
       case 'public':
         return (
-          <div className={`w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white font-black text-xs sm:text-base md:text-xl shadow-md flex-shrink-0 group-hover:scale-105 transition-transform ${className}`}>
+          <div className={`w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-black text-xs sm:text-base md:text-xl shadow-md flex-shrink-0 group-hover:scale-105 transition-transform ${className}`}>
             {initial}
           </div>
         );
       case 'footer':
         return (
-          <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white font-black text-xs sm:text-sm shadow-md flex-shrink-0 ${className}`}>
+          <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-black text-xs sm:text-sm shadow-md flex-shrink-0 ${className}`}>
             {initial}
           </div>
         );
       default:
         return (
-          <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white font-black shadow-md flex-shrink-0 ${className}`}>
+          <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-black shadow-md flex-shrink-0 ${className}`}>
             {initial}
           </div>
         );
@@ -155,14 +155,14 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
   // Composed presentation with typography
   if (variant === 'sidebar') {
     return (
-      <div className="flex items-center space-x-2.5 overflow-hidden">
+      <div className="flex items-center gap-3 min-w-0">
         {hasValidImage ? renderImage() : renderFallbackIcon()}
-        <div className="truncate">
-          <h1 className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white tracking-wide truncate">
-            {name.toUpperCase()}
+        <div className="min-w-0">
+          <h1 className="text-[15px] font-bold text-slate-800 tracking-tight leading-snug truncate">
+            {name}
           </h1>
-          <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold tracking-wider uppercase truncate">
-            Financial Manager
+          <p className="text-[0.65rem] text-indigo-500/70 font-medium tracking-wide truncate">
+            Management System
           </p>
         </div>
       </div>

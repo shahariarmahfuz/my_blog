@@ -1,35 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
-  LayoutDashboard,
-  Building2,
-  FolderPlus,
-  Users2,
-  UserPlus,
-  FileSpreadsheet,
   PieChart,
-  ClipboardList,
+  Users,
+  UserCheck,
   HeartHandshake,
   PiggyBank,
+  Gift,
   HandCoins,
+  FileText,
+  History,
+  Settings as SettingsIcon,
+  ChevronDown,
+  X,
+  FileSpreadsheet,
+  FolderPlus,
+  UserPlus,
   Receipt,
   Clock,
-  FileBarChart2,
-  History,
-  ShieldCheck,
-  LogOut,
-  ChevronLeft,
-  ChevronRight,
-  ChevronDown,
-  Shield,
+  Calendar,
+  Plus,
+  Building2,
+  Sparkles,
   Sliders,
+  ShieldCheck,
   CircleDollarSign,
   BellRing,
-  Cpu,
-  Globe,
-  Sparkles,
-  Calendar,
-  Plus
+  Cpu
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { BrandLogo } from '../common/BrandLogo';
@@ -37,6 +34,8 @@ import { BrandLogo } from '../common/BrandLogo';
 interface SidebarProps {
   isCollapsed: boolean;
   setIsCollapsed: (val: boolean) => void;
+  mobileOpen?: boolean;
+  onCloseMobile?: () => void;
   onNavigate?: () => void;
 }
 
@@ -55,10 +54,17 @@ interface NavItem {
   icon: React.ReactNode;
   permission?: string;
   children?: NavSubItem[];
+  section: 'Main' | 'Organization' | 'Transactions' | 'Reporting' | 'Settings';
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed, onNavigate }) => {
-  const { user, logout, hasPermission } = useAuth();
+export const Sidebar: React.FC<SidebarProps> = ({
+  isCollapsed,
+  setIsCollapsed,
+  mobileOpen,
+  onCloseMobile,
+  onNavigate,
+}) => {
+  const { hasPermission } = useAuth();
   const location = useLocation();
 
   // Helper to determine active section from current route
@@ -69,21 +75,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed, o
     if (pathname.startsWith('/app/contributions')) return 'contributions';
     if (pathname.startsWith('/app/donations')) return 'donations';
     if (pathname.startsWith('/app/assistance')) return 'assistance';
-    if (pathname.startsWith('/app/settings')) return 'settings';
+    if (pathname.startsWith('/app/settings') || pathname.startsWith('/app/users-roles')) return 'settings';
     return null;
   };
 
-  // State to track single expanded menu key (Accordion behavior)
-  // Initially starts with ONLY the active route parent expanded, or all collapsed if on non-parent route
   const [expandedKey, setExpandedKey] = useState<string | null>(() => getActiveParentKey(location.pathname));
 
-  // Sync expanded section whenever route changes
   useEffect(() => {
     const activeKey = getActiveParentKey(location.pathname);
     setExpandedKey(activeKey);
   }, [location.pathname]);
 
-  // Accordion toggle: opening one collapses all others; clicking the open one closes it
   const handleToggleMenu = (key: string) => {
     setExpandedKey((prevKey) => (prevKey === key ? null : key));
   };
@@ -95,73 +97,84 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed, o
   };
 
   const navItems: NavItem[] = [
+    // Main
     {
       key: 'dashboard',
       label: 'Dashboard',
       path: '/app/dashboard',
-      icon: <LayoutDashboard className="w-5 h-5" />,
+      icon: <PieChart className="w-4 h-4 nav-icon" />,
       permission: 'dashboard.view',
+      section: 'Main',
     },
+    // Organization
     {
       key: 'groups',
-      label: 'Group',
-      icon: <Building2 className="w-5 h-5" />,
+      label: 'Groups',
+      icon: <Users className="w-4 h-4 nav-icon" />,
       permission: 'groups.view',
+      section: 'Organization',
       children: [
+        {
+          label: 'Manage Groups',
+          path: '/app/groups/manage',
+          icon: <Building2 className="w-3.5 h-3.5" />,
+          permission: 'groups.view',
+        },
         {
           label: 'Add Group',
           path: '/app/groups/add',
-          icon: <FolderPlus className="w-4 h-4" />,
+          icon: <FolderPlus className="w-3.5 h-3.5" />,
           permission: 'groups.create',
         },
         {
-          label: 'Manage Group',
-          path: '/app/groups/manage',
-          icon: <Building2 className="w-4 h-4" />,
-          permission: 'groups.view',
-        },
-        {
-          label: 'Group Ledger',
-          path: '/app/groups/ledger',
-          icon: <FileSpreadsheet className="w-4 h-4" />,
-          permission: 'groups.view',
-        },
-        {
-          label: 'Group Fund',
+          label: 'Group Fund & Utilization',
           path: '/app/groups/fund',
-          icon: <PieChart className="w-4 h-4" />,
+          icon: <PieChart className="w-3.5 h-3.5" />,
+          permission: 'groups.view',
+        },
+        {
+          label: 'Group Financial Ledger',
+          path: '/app/groups/ledger',
+          icon: <FileSpreadsheet className="w-3.5 h-3.5" />,
           permission: 'groups.view',
         },
       ],
     },
     {
       key: 'members',
-      label: 'Member',
-      icon: <Users2 className="w-5 h-5" />,
+      label: 'Members',
+      icon: <UserCheck className="w-4 h-4 nav-icon" />,
       permission: 'members.view',
+      section: 'Organization',
       children: [
+        {
+          label: 'Manage Members',
+          path: '/app/members/manage',
+          icon: <Users className="w-3.5 h-3.5" />,
+          permission: 'members.view',
+        },
         {
           label: 'Add Member',
           path: '/app/members/add',
-          icon: <UserPlus className="w-4 h-4" />,
+          icon: <UserPlus className="w-3.5 h-3.5" />,
           permission: 'members.create',
         },
         {
-          label: 'Manage Member',
-          path: '/app/members/manage',
-          icon: <Users2 className="w-4 h-4" />,
-          permission: 'members.view',
-        },
-        {
-          label: 'Member Ledger',
+          label: 'Monthly Contributions',
           path: '/app/members/ledger',
-          icon: <FileSpreadsheet className="w-4 h-4" />,
+          icon: <Clock className="w-3.5 h-3.5" />,
           permission: 'members.view',
         },
         {
-          label: 'Member Application',
+          label: 'Contribution Ledger',
+          path: '/app/members/ledger',
+          icon: <FileSpreadsheet className="w-3.5 h-3.5" />,
+          permission: 'members.view',
+        },
+        {
+          label: 'Member Applications',
           path: '/app/members/applications',
-          icon: <ClipboardList className="w-4 h-4" />,
+          icon: <FileText className="w-3.5 h-3.5" />,
           permission: 'members.view',
         },
       ],
@@ -169,63 +182,72 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed, o
     {
       key: 'beneficiaries',
       label: 'Beneficiaries',
-      icon: <HeartHandshake className="w-5 h-5" />,
+      icon: <HeartHandshake className="w-4 h-4 nav-icon" />,
       permission: 'beneficiaries.view',
+      section: 'Organization',
       children: [
+        {
+          label: 'Manage Beneficiaries',
+          path: '/app/beneficiaries/manage',
+          icon: <HeartHandshake className="w-3.5 h-3.5" />,
+          permission: 'beneficiaries.view',
+        },
         {
           label: 'Add Beneficiary',
           path: '/app/beneficiaries/add',
-          icon: <UserPlus className="w-4 h-4" />,
+          icon: <UserPlus className="w-3.5 h-3.5" />,
           permission: 'beneficiaries.create',
         },
         {
-          label: 'Manage Beneficiary',
-          path: '/app/beneficiaries/manage',
-          icon: <HeartHandshake className="w-4 h-4" />,
+          label: 'Assistance',
+          path: '/app/beneficiaries/ledger',
+          icon: <HandCoins className="w-3.5 h-3.5" />,
           permission: 'beneficiaries.view',
         },
         {
-          label: 'Beneficiary Ledger',
-          path: '/app/beneficiaries/ledger',
-          icon: <FileSpreadsheet className="w-4 h-4" />,
-          permission: 'beneficiaries.view',
+          label: 'Qard Hasan',
+          path: '/app/assistance/qard-hasan/manage',
+          icon: <HandCoins className="w-3.5 h-3.5" />,
+          permission: 'assistance.view',
         },
       ],
     },
+    // Transactions
     {
       key: 'contributions',
-      label: 'Contribution',
-      icon: <PiggyBank className="w-5 h-5" />,
+      label: 'Contributions',
+      icon: <PiggyBank className="w-4 h-4 nav-icon" />,
       permission: 'contributions.view',
+      section: 'Transactions',
       children: [
         {
           label: 'Add Contribution',
           path: '/app/contributions/add',
-          icon: <PiggyBank className="w-4 h-4" />,
+          icon: <PiggyBank className="w-3.5 h-3.5" />,
           permission: 'contributions.create',
         },
         {
-          label: 'Manage Contribution',
+          label: 'Manage Contributions',
           path: '/app/contributions/manage',
-          icon: <Receipt className="w-4 h-4" />,
+          icon: <Receipt className="w-3.5 h-3.5" />,
           permission: 'contributions.view',
         },
         {
-          label: 'Due Contribution',
+          label: 'Due Contributions',
           path: '/app/contributions/due',
-          icon: <Clock className="w-4 h-4" />,
-          permission: 'contributions.view',
-        },
-        {
-          label: 'Contribution Ledger',
-          path: '/app/contributions/ledger',
-          icon: <FileSpreadsheet className="w-4 h-4" />,
+          icon: <Clock className="w-3.5 h-3.5" />,
           permission: 'contributions.view',
         },
         {
           label: 'Monthly Summary',
           path: '/app/contributions/monthly-summary',
-          icon: <Calendar className="w-4 h-4" />,
+          icon: <Calendar className="w-3.5 h-3.5" />,
+          permission: 'contributions.view',
+        },
+        {
+          label: 'Contribution Ledger',
+          path: '/app/contributions/ledger',
+          icon: <FileSpreadsheet className="w-3.5 h-3.5" />,
           permission: 'contributions.view',
         },
       ],
@@ -233,25 +255,26 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed, o
     {
       key: 'donations',
       label: 'Donations',
-      icon: <HeartHandshake className="w-5 h-5 text-purple-600 dark:text-purple-400" />,
+      icon: <Gift className="w-4 h-4 nav-icon text-indigo-600 dark:text-indigo-400" />,
       permission: 'donations.view',
+      section: 'Transactions',
       children: [
         {
           label: 'Add Donation',
           path: '/app/donations/add',
-          icon: <Plus className="w-4 h-4" />,
+          icon: <Plus className="w-3.5 h-3.5" />,
           permission: 'donations.create',
         },
         {
           label: 'Manage Donations',
           path: '/app/donations/manage',
-          icon: <Receipt className="w-4 h-4" />,
+          icon: <Receipt className="w-3.5 h-3.5" />,
           permission: 'donations.view',
         },
         {
           label: 'Donation Ledger',
           path: '/app/donations/ledger',
-          icon: <FileSpreadsheet className="w-4 h-4" />,
+          icon: <FileSpreadsheet className="w-3.5 h-3.5" />,
           permission: 'donations.view',
         },
       ],
@@ -259,357 +282,328 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed, o
     {
       key: 'assistance',
       label: 'Assistance',
-      icon: <HandCoins className="w-5 h-5" />,
+      icon: <HandCoins className="w-4 h-4 nav-icon" />,
       permission: 'assistance.view',
+      section: 'Transactions',
       children: [
-        // Qard Hasan (QH) Section
         {
           sectionHeader: 'QARD HASAN (QH)',
           label: 'Add Qard Hasan',
           path: '/app/assistance/qard-hasan/add',
-          icon: <HandCoins className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />,
+          icon: <HandCoins className="w-3.5 h-3.5 text-emerald-600" />,
           permission: 'assistance.create',
         },
         {
           label: 'Manage Qard Hasan',
           path: '/app/assistance/qard-hasan/manage',
-          icon: <Building2 className="w-4 h-4" />,
+          icon: <Building2 className="w-3.5 h-3.5" />,
           permission: 'assistance.view',
         },
         {
           label: 'Repayments',
           path: '/app/assistance/qard-hasan/repayments',
-          icon: <Receipt className="w-4 h-4" />,
+          icon: <Receipt className="w-3.5 h-3.5" />,
           permission: 'repayments.view',
         },
         {
           label: 'Qard Hasan Ledger',
           path: '/app/assistance/qard-hasan/ledger',
-          icon: <FileSpreadsheet className="w-4 h-4" />,
+          icon: <FileSpreadsheet className="w-3.5 h-3.5" />,
           permission: 'assistance.view',
         },
-        // Sadaqah (SD) Section
         {
           sectionHeader: 'SADAQAH (SD)',
           label: 'Add Sadaqah',
           path: '/app/assistance/sadaqah/add',
-          icon: <HeartHandshake className="w-4 h-4 text-rose-500 dark:text-rose-400" />,
+          icon: <HeartHandshake className="w-3.5 h-3.5 text-rose-500" />,
           permission: 'assistance.create',
         },
         {
           label: 'Manage Sadaqah',
           path: '/app/assistance/sadaqah/manage',
-          icon: <Building2 className="w-4 h-4" />,
+          icon: <Building2 className="w-3.5 h-3.5" />,
           permission: 'assistance.view',
         },
         {
           label: 'Sadaqah Ledger',
           path: '/app/assistance/sadaqah/ledger',
-          icon: <FileSpreadsheet className="w-4 h-4" />,
+          icon: <FileSpreadsheet className="w-3.5 h-3.5" />,
           permission: 'assistance.view',
         },
       ],
     },
+    // Reporting
     {
       key: 'reports',
       label: 'Financial Reports',
       path: '/app/reports',
-      icon: <FileBarChart2 className="w-5 h-5" />,
+      icon: <FileText className="w-4 h-4 nav-icon" />,
       permission: 'reports.view',
+      section: 'Reporting',
+      children: [
+        {
+          label: 'Financial Summary',
+          path: '/app/reports?tab=financial',
+          permission: 'reports.view',
+        },
+        {
+          label: 'Group Reports',
+          path: '/app/reports?tab=groups',
+          permission: 'reports.view',
+        },
+        {
+          label: 'Member Reports',
+          path: '/app/reports?tab=members',
+          permission: 'reports.view',
+        },
+        {
+          label: 'Beneficiary Reports',
+          path: '/app/reports?tab=beneficiaries',
+          permission: 'reports.view',
+        },
+        {
+          label: 'Export Reports',
+          path: '/app/reports?tab=export',
+          permission: 'reports.export',
+        },
+      ],
     },
     {
       key: 'audit_logs',
       label: 'Audit Trail',
       path: '/app/audit-logs',
-      icon: <History className="w-5 h-5" />,
+      icon: <History className="w-4 h-4 nav-icon" />,
       permission: 'audit_logs.view',
+      section: 'Reporting',
     },
+    // Settings
     {
       key: 'settings',
       label: 'Settings',
-      icon: <Sliders className="w-5 h-5" />,
+      icon: <SettingsIcon className="w-4 h-4 nav-icon" />,
       permission: 'settings.view',
+      section: 'Settings',
       children: [
         {
           label: 'Foundation Branding',
           path: '/app/settings/branding',
-          icon: <Sparkles className="w-4 h-4 text-emerald-500" />,
+          icon: <Sparkles className="w-3.5 h-3.5 text-indigo-500" />,
           permission: 'settings.view',
         },
         {
           label: 'General Settings',
           path: '/app/settings/general',
-          icon: <Sliders className="w-4 h-4" />,
+          icon: <Sliders className="w-3.5 h-3.5" />,
           permission: 'settings.view',
         },
         {
           label: 'Foundation Profile',
           path: '/app/settings/profile',
-          icon: <Building2 className="w-4 h-4" />,
+          icon: <Building2 className="w-3.5 h-3.5" />,
           permission: 'settings.view',
         },
         {
-          label: 'User & Roles',
-          path: '/app/settings/users-roles',
-          icon: <Users2 className="w-4 h-4" />,
+          label: 'Users & Roles',
+          path: '/app/users-roles',
+          icon: <Users className="w-3.5 h-3.5" />,
           permission: 'users.view',
         },
         {
           label: 'Permissions',
           path: '/app/settings/permissions',
-          icon: <ShieldCheck className="w-4 h-4" />,
+          icon: <ShieldCheck className="w-3.5 h-3.5" />,
           permission: 'roles.view',
         },
         {
           label: 'Financial Settings',
           path: '/app/settings/financial',
-          icon: <CircleDollarSign className="w-4 h-4" />,
+          icon: <CircleDollarSign className="w-3.5 h-3.5" />,
           permission: 'settings.view',
         },
         {
           label: 'Contribution Settings',
           path: '/app/settings/contributions',
-          icon: <PiggyBank className="w-4 h-4" />,
+          icon: <PiggyBank className="w-3.5 h-3.5" />,
           permission: 'settings.view',
         },
         {
           label: 'Assistance Settings',
           path: '/app/settings/assistance',
-          icon: <HandCoins className="w-4 h-4" />,
+          icon: <HandCoins className="w-3.5 h-3.5" />,
           permission: 'settings.view',
         },
         {
           label: 'Notification Settings',
           path: '/app/settings/notifications',
-          icon: <BellRing className="w-4 h-4" />,
+          icon: <BellRing className="w-3.5 h-3.5" />,
           permission: 'settings.view',
         },
         {
           label: 'System Settings',
           path: '/app/settings/system',
-          icon: <Cpu className="w-4 h-4" />,
+          icon: <Cpu className="w-3.5 h-3.5" />,
           permission: 'settings.view',
         },
       ],
     },
-    {
-      key: 'users_roles',
-      label: 'Users & Roles',
-      path: '/app/users-roles',
-      icon: <ShieldCheck className="w-5 h-5" />,
-      permission: 'users.view',
-    },
+  ];
+
+  const sections: ('Main' | 'Organization' | 'Transactions' | 'Reporting' | 'Settings')[] = [
+    'Main',
+    'Organization',
+    'Transactions',
+    'Reporting',
+    'Settings',
   ];
 
   return (
     <aside
-      className={`fixed top-0 left-0 z-40 h-screen bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 transition-all duration-300 flex flex-col justify-between shadow-sm dark:shadow-none ${
-        isCollapsed ? 'w-20' : 'w-64'
-      }`}
+      id="sidebar"
+      className={`text-slate-700 flex flex-col ${isCollapsed ? 'collapsed' : ''}`}
+      aria-label="Sidebar"
     >
       {/* Brand Header */}
-      <div>
-        <div className="flex items-center justify-between h-16 px-4 border-b border-slate-200 dark:border-slate-800">
-          {!isCollapsed && (
-            <BrandLogo variant="sidebar" />
-          )}
+      <div className="logo-area flex items-center justify-between gap-3 px-5 py-4 relative z-10">
+        <BrandLogo variant={isCollapsed ? 'sidebar-collapsed' : 'sidebar'} />
+        <button
+          id="drawerCloseBtn"
+          className="drawer-close"
+          aria-label="Close navigation menu"
+          onClick={onCloseMobile}
+        >
+          <X className="w-5 h-5 text-slate-500 hover:text-slate-800" />
+        </button>
+      </div>
 
-          {isCollapsed && (
-            <BrandLogo variant="sidebar-collapsed" />
-          )}
+      {/* Navigation Sections */}
+      <nav className="flex-1 overflow-y-auto scrollbar py-2 px-3 relative z-10" aria-label="Main navigation">
+        {sections.map((sectionName) => {
+          const sectionItems = navItems.filter(
+            (item) =>
+              item.section === sectionName &&
+              (!item.permission || hasPermission(item.permission))
+          );
 
-          <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className={`p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ${
-              isCollapsed ? 'hidden' : 'block'
-            }`}
-            title="Toggle Sidebar"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-        </div>
+          if (sectionItems.length === 0) return null;
 
-        {/* Navigation Items */}
-        <nav className="p-3 space-y-1 overflow-y-auto max-h-[calc(100vh-210px)]">
-          {navItems
-            .filter((item) => !item.permission || hasPermission(item.permission))
-            .map((item) => {
-              if (item.children) {
-                const isItemActive = location.pathname.startsWith(`/app/${item.key}`);
-                const isExpanded = expandedKey === item.key;
-                const visibleChildren = item.children.filter(
-                  (child) => !child.permission || hasPermission(child.permission)
-                );
+          return (
+            <React.Fragment key={sectionName}>
+              {!isCollapsed && (
+                <p className="section-label px-1">{sectionName}</p>
+              )}
 
-                if (isCollapsed) {
+              {sectionItems.map((item) => {
+                if (item.children) {
+                  const isItemActive =
+                    location.pathname.startsWith(`/app/${item.key}`) ||
+                    (item.key === 'reports' && location.pathname.startsWith('/app/reports')) ||
+                    (item.key === 'settings' &&
+                      (location.pathname.startsWith('/app/settings') ||
+                        location.pathname.startsWith('/app/users-roles')));
+
+                  const isExpanded = expandedKey === item.key;
+                  const visibleChildren = item.children.filter(
+                    (child) => !child.permission || hasPermission(child.permission)
+                  );
+
                   return (
-                    <NavLink
+                    <div
                       key={item.key}
-                      to={visibleChildren[0]?.path || `/app/${item.key}`}
-                      onClick={handleLinkClick}
-                      className={`flex items-center justify-center px-0 py-2.5 rounded-xl font-medium text-sm transition-all duration-150 ${
-                        isItemActive
-                          ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
-                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80'
+                      className={`menu-item ${isExpanded ? 'open' : ''} ${
+                        isItemActive && !isExpanded ? 'active' : ''
                       }`}
-                      title={item.label}
                     >
-                      <span className="flex-shrink-0">{item.icon}</span>
-                    </NavLink>
+                      <button
+                        type="button"
+                        onClick={() => handleToggleMenu(item.key)}
+                        aria-expanded={isExpanded}
+                        aria-controls={`sub-${item.key}`}
+                        className="menu-title justify-between px-3"
+                      >
+                        <span className="flex items-center gap-3 min-w-0">
+                          <span className="w-5 text-center flex-shrink-0 flex items-center justify-center">
+                            {item.icon}
+                          </span>
+                          {!isCollapsed && (
+                            <span className="truncate">{item.label}</span>
+                          )}
+                        </span>
+                        {!isCollapsed && (
+                          <ChevronDown
+                            className={`w-3.5 h-3.5 text-slate-400 chevron-icon opacity-60 ${
+                              isExpanded ? 'rotate-180 opacity-100 text-indigo-600' : ''
+                            }`}
+                          />
+                        )}
+                      </button>
+
+                      {/* Submenu Accordion */}
+                      {!isCollapsed && (
+                        <div
+                          id={`sub-${item.key}`}
+                          className={`submenu mt-0.5 ${isExpanded ? 'open' : ''}`}
+                        >
+                          {visibleChildren.map((subItem, idx) => (
+                            <React.Fragment key={subItem.path || idx}>
+                              {subItem.sectionHeader && (
+                                <div className="pt-2.5 pb-1 px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-1.5 first:mt-0 first:pt-0.5">
+                                  {subItem.sectionHeader}
+                                </div>
+                              )}
+                              <NavLink
+                                to={subItem.path}
+                                onClick={handleLinkClick}
+                                className={({ isActive }) =>
+                                  isActive ? 'active' : ''
+                                }
+                              >
+                                <span className="truncate">{subItem.label}</span>
+                              </NavLink>
+                            </React.Fragment>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   );
                 }
 
-                return (
-                  <div key={item.key} className="space-y-1">
-                    <button
-                      type="button"
-                      onClick={() => handleToggleMenu(item.key)}
-                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-medium text-sm transition-all duration-150 group ${
-                        isItemActive && !isExpanded
-                          ? 'bg-emerald-50 dark:bg-emerald-600/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30 font-bold'
-                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80'
-                      }`}
-                    >
-                      <div className="flex items-center space-x-3">
-                        <span className="flex-shrink-0 text-slate-500 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
-                          {item.icon}
-                        </span>
-                        <span className="truncate font-semibold text-slate-800 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-white">
-                          {item.label}
-                        </span>
-                      </div>
-                      <ChevronDown
-                        className={`w-4 h-4 text-slate-400 dark:text-slate-500 transition-transform duration-200 ${
-                          isExpanded ? 'rotate-180 text-emerald-600 dark:text-emerald-400' : ''
-                        }`}
-                      />
-                    </button>
+                // Simple items without submenus
+                const isItemActive =
+                  item.path &&
+                  (location.pathname === item.path ||
+                    (item.path !== '/app/dashboard' &&
+                      location.pathname.startsWith(item.path)));
 
-                    {/* Submenu links (Accordion: only rendered when this section is the active expandedKey) */}
-                    {isExpanded && (
-                      <div className="pl-3 pr-1 py-1 space-y-1 border-l-2 border-slate-200 dark:border-slate-800 ml-5">
-                        {visibleChildren.map((subItem, sIdx) => (
-                          <React.Fragment key={subItem.path || sIdx}>
-                            {subItem.sectionHeader && (
-                              <div className="pt-2 pb-1 px-3 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 border-t border-slate-100 dark:border-slate-800/60 mt-1.5 first:mt-0 first:border-0 first:pt-0.5">
-                                {subItem.sectionHeader}
-                              </div>
-                            )}
-                            <NavLink
-                              to={subItem.path}
-                              onClick={handleLinkClick}
-                              className={({ isActive }) =>
-                                `flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-150 ${
-                                  isActive
-                                    ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/30'
-                                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
-                                }`
-                              }
-                            >
-                              <span className="flex-shrink-0">{subItem.icon}</span>
-                              <span className="truncate">{subItem.label}</span>
-                            </NavLink>
-                          </React.Fragment>
-                        ))}
-                      </div>
-                    )}
+                return (
+                  <div
+                    key={item.key}
+                    className={`menu-item ${isItemActive ? 'active' : ''}`}
+                  >
+                    <NavLink
+                      to={item.path || '#'}
+                      onClick={handleLinkClick}
+                      className={({ isActive }) =>
+                        `menu-title gap-3 px-3 ${isActive ? 'active' : ''}`
+                      }
+                    >
+                      <span className="w-5 text-center flex-shrink-0 flex items-center justify-center">
+                        {item.icon}
+                      </span>
+                      {!isCollapsed && <span className="truncate">{item.label}</span>}
+                    </NavLink>
                   </div>
                 );
-              }
+              })}
+            </React.Fragment>
+          );
+        })}
+      </nav>
 
-              // Simple item without children
-              const isDirectActive = location.pathname === item.path;
-
-              if (isCollapsed) {
-                return (
-                  <NavLink
-                    key={item.key}
-                    to={item.path!}
-                    onClick={handleLinkClick}
-                    className={`flex items-center justify-center px-0 py-2.5 rounded-xl font-medium text-sm transition-all duration-150 ${
-                      isDirectActive
-                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
-                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80'
-                    }`}
-                    title={item.label}
-                  >
-                    <span className="flex-shrink-0">{item.icon}</span>
-                  </NavLink>
-                );
-              }
-
-              return (
-                <NavLink
-                  key={item.key}
-                  to={item.path!}
-                  onClick={handleLinkClick}
-                  className={`flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all duration-150 group ${
-                    isDirectActive
-                      ? 'bg-emerald-600 text-white font-bold shadow-sm shadow-emerald-600/30'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80'
-                  }`}
-                >
-                  <span className={`flex-shrink-0 transition-colors ${isDirectActive ? 'text-white' : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white'}`}>
-                    {item.icon}
-                  </span>
-                  <span className="truncate font-semibold text-slate-800 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-white">
-                    {item.label}
-                  </span>
-                </NavLink>
-              );
-            })}
-        </nav>
-      </div>
-
-      {/* User profile & Quick Links */}
-      <div className="p-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 space-y-2">
-        <NavLink
-          to="/"
-          onClick={handleLinkClick}
-          className="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors"
-          title="Go to Public Website"
-        >
-          <Globe className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-          {!isCollapsed && <span>Public Website</span>}
-        </NavLink>
-
-        <div className="flex items-center justify-between">
-          {!isCollapsed && user && (
-            <NavLink
-              to="/app/profile"
-              onClick={handleLinkClick}
-              className="flex items-center space-x-2.5 overflow-hidden group hover:opacity-80 transition-opacity"
-              title="View My Profile"
-            >
-              {user.profile_picture ? (
-                <img
-                  src={user.profile_picture}
-                  alt={user.full_name}
-                  className="w-8 h-8 rounded-full object-cover border border-emerald-500 flex-shrink-0"
-                />
-              ) : (
-                <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-bold text-xs flex-shrink-0">
-                  {user.full_name.charAt(0).toUpperCase()}
-                </div>
-              )}
-              <div className="truncate">
-                <p className="text-xs font-bold text-slate-900 dark:text-white truncate group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                  {user.full_name}
-                </p>
-                <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
-                  @{user.username || 'admin'} • {user.role?.name || 'Staff'}
-                </p>
-              </div>
-            </NavLink>
-          )}
-
-          <button
-            onClick={logout}
-            className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
-            title="Sign Out"
-          >
-            <LogOut className="w-4 h-4" />
-          </button>
+      {/* Footer */}
+      <div className="sidebar-footer px-4 py-3 relative z-10">
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50 animate-pulse"></div>
+          <p className="text-[0.65rem] text-slate-400">© 2026 Foundation • v1.0</p>
         </div>
       </div>
     </aside>

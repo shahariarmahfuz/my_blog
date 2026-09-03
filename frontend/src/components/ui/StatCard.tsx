@@ -18,37 +18,37 @@ export const StatCard: React.FC<StatCardProps> = ({
   value,
   subtitle,
   icon,
-  iconBgColor = 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+  iconBgColor = 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white',
   trend,
   onClick,
 }) => {
   return (
     <div
       onClick={onClick}
-      className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-200 ${
-        onClick ? 'cursor-pointer hover:border-emerald-500/50' : ''
+      className={`card-hover bg-white border border-slate-100 rounded-2xl p-5 shadow-sm transition-all duration-200 ${
+        onClick ? 'cursor-pointer hover:border-indigo-500/40' : ''
       }`}
     >
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
             {title}
           </p>
-          <h4 className="mt-2 text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          <h4 className="mt-2 text-2xl font-bold text-slate-800 tracking-tight">
             {value}
           </h4>
           {subtitle && (
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-xs text-slate-400">
               {subtitle}
             </p>
           )}
           {trend && (
-            <p className="mt-1.5 flex items-center text-xs font-medium">
+            <p className="mt-1.5 flex items-center text-xs font-semibold">
               <span
                 className={
                   trend.isPositive
-                    ? 'text-emerald-600 dark:text-emerald-400 font-bold'
-                    : 'text-rose-600 dark:text-rose-400 font-bold'
+                    ? 'text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full text-[11px]'
+                    : 'text-rose-700 bg-rose-100 px-2 py-0.5 rounded-full text-[11px]'
                 }
               >
                 {trend.value}
@@ -56,7 +56,7 @@ export const StatCard: React.FC<StatCardProps> = ({
             </p>
           )}
         </div>
-        <div className={`p-3.5 rounded-2xl flex-shrink-0 ${iconBgColor}`}>
+        <div className={`p-3 rounded-xl flex-shrink-0 shadow-md ${iconBgColor}`}>
           {icon}
         </div>
       </div>

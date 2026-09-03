@@ -18,10 +18,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         )}
         <input
           ref={ref}
-          className={`w-full px-3.5 py-2.5 bg-white dark:bg-slate-900 border rounded-xl text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm transition-all shadow-sm ${
+          className={`w-full px-3.5 py-2.5 bg-white border rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent text-sm transition-all shadow-sm ${
             error
-              ? 'border-rose-300 dark:border-rose-700 focus:ring-rose-500'
-              : 'border-slate-300 dark:border-slate-700'
+              ? 'border-rose-300 focus:ring-rose-500'
+              : 'border-slate-200'
           } ${className}`}
           {...props}
         />
@@ -52,10 +52,10 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         )}
         <textarea
           ref={ref}
-          className={`w-full px-3.5 py-2.5 bg-white dark:bg-slate-900 border rounded-xl text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm transition-all shadow-sm ${
+          className={`w-full px-3.5 py-2.5 bg-white border rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent text-sm transition-all shadow-sm ${
             error
-              ? 'border-rose-300 dark:border-rose-700 focus:ring-rose-500'
-              : 'border-slate-300 dark:border-slate-700'
+              ? 'border-rose-300 focus:ring-rose-500'
+              : 'border-slate-200'
           } ${className}`}
           rows={3}
           {...props}

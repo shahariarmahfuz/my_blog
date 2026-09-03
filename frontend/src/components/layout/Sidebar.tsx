@@ -543,24 +543,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           id={`sub-${item.key}`}
                           className={`submenu mt-0.5 ${isExpanded ? 'open' : ''}`}
                         >
-                          {visibleChildren.map((subItem, idx) => (
-                            <React.Fragment key={subItem.path || idx}>
-                              {subItem.sectionHeader && (
-                                <div className="pt-1.5 pb-0.5 px-2.5 text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-1 first:mt-0 first:pt-0.5">
-                                  {subItem.sectionHeader}
-                                </div>
-                              )}
-                              <NavLink
-                                to={subItem.path}
-                                onClick={handleLinkClick}
-                                className={({ isActive }) =>
-                                  isActive ? 'active' : ''
-                                }
-                              >
-                                <span className="truncate">{subItem.label}</span>
-                              </NavLink>
-                            </React.Fragment>
-                          ))}
+                          <div className="submenu-content">
+                            {visibleChildren.map((subItem, idx) => (
+                              <React.Fragment key={subItem.path || idx}>
+                                {subItem.sectionHeader && (
+                                  <div className="pt-2 pb-0.5 px-2.5 text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-1 first:mt-0 first:pt-0.5">
+                                    {subItem.sectionHeader}
+                                  </div>
+                                )}
+                                <NavLink
+                                  to={subItem.path}
+                                  onClick={handleLinkClick}
+                                  className={({ isActive }) =>
+                                    `submenu-item ${isActive ? 'active' : ''}`
+                                  }
+                                >
+                                  <span className="truncate">{subItem.label}</span>
+                                </NavLink>
+                              </React.Fragment>
+                            ))}
+                          </div>
                         </div>
                       )}
                     </div>

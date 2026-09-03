@@ -165,15 +165,25 @@ html.dark .section-label {
   width: 100%;
   border-radius: 9px !important;
   margin-bottom: 1.5px;
-  transition: background 0.2s ease, color 0.2s ease;
+  padding: 0.35rem 0.65rem;
+  transition: background-color 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.14s ease;
   color: #475569;
   font-weight: 500;
   font-size: 0.8125rem;
   letter-spacing: 0.01em;
   text-align: left;
+  border: 1px solid transparent;
+  -webkit-tap-highlight-color: transparent;
 }
 .menu-title:hover { background: #f1f5f9; color: #1e293b; }
-.menu-title:active { background: #e9edf4; }
+.menu-title:active {
+  background: #e9edf4;
+  transform: scale(0.988);
+}
 
 html.dark .menu-title {
   color: #94a3b8;
@@ -182,6 +192,9 @@ html.dark .menu-title:hover {
   background: #1e293b;
   color: #f8fafc;
 }
+html.dark .menu-title:active {
+  background: #243044;
+}
 
 @media (min-width: 1024px) {
   .menu-title {
@@ -189,6 +202,7 @@ html.dark .menu-title:hover {
     border-radius: 10px !important;
     margin-bottom: 2px;
     font-size: 0.875rem;
+    padding: 0.45rem 0.75rem;
   }
 }
 
@@ -200,12 +214,16 @@ html.dark .menu-title:hover {
   text-align: center;
   color: #64748b;
   opacity: 0.75;
-  transition: color 0.2s ease, opacity 0.2s ease;
+  transition: color 0.2s ease, opacity 0.2s ease, transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
   flex-shrink: 0;
+  will-change: transform;
 }
 .menu-title:hover i:first-child,
 .menu-title:hover svg:first-child,
-.menu-title:hover .nav-icon { opacity: 1; color: #6366f1; }
+.menu-title:hover .nav-icon {
+  opacity: 1;
+  color: #6366f1;
+}
 
 html.dark .menu-title i:first-child,
 html.dark .menu-title svg:first-child,
@@ -218,10 +236,15 @@ html.dark .menu-title:hover .nav-icon {
   color: #a5b4fc;
 }
 
-.menu-item.open > .menu-title { color: #312e81; }
+.menu-item.open > .menu-title {
+  color: #312e81;
+}
 .menu-item.open > .menu-title i:first-child,
 .menu-item.open > .menu-title svg:first-child,
-.menu-item.open > .menu-title .nav-icon { color: #6366f1; opacity: 1; }
+.menu-item.open > .menu-title .nav-icon {
+  color: #6366f1;
+  opacity: 1;
+}
 
 html.dark .menu-item.open > .menu-title {
   color: #c7d2fe;
@@ -232,149 +255,282 @@ html.dark .menu-item.open > .menu-title .nav-icon {
   color: #818cf8;
 }
 
-/* Active state */
-.menu-item.active > .menu-title,
-.menu-title.active {
-  background: linear-gradient(135deg, rgba(139,92,246,0.14), rgba(99,102,241,0.09)) !important;
-  color: #5b21b6 !important;
-  font-weight: 600;
-  border: 1px solid rgba(139,92,246,0.22);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
-}
-html.dark .menu-item.active > .menu-title,
-html.dark .menu-title.active {
-  background: linear-gradient(135deg, rgba(139,92,246,0.25), rgba(99,102,241,0.16)) !important;
-  color: #c4b5fd !important;
-  border: 1px solid rgba(139,92,246,0.35);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
-}
-
-.menu-item.active > .menu-title::before,
-.menu-title.active::before {
+/* Active state for main menu item */
+.menu-title::before {
   content: '';
   position: absolute;
   left: 0;
   top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 55%;
+  transform: translateY(-50%) scaleY(0);
+  transform-origin: center;
+  width: 3.5px;
+  height: 52%;
   border-radius: 0 4px 4px 0;
   background: linear-gradient(180deg, #8b5cf6, #6366f1);
+  opacity: 0;
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.18s ease;
 }
+
+.menu-item.active > .menu-title,
+.menu-title.active {
+  background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(99,102,241,0.08)) !important;
+  color: #5b21b6 !important;
+  font-weight: 600;
+  border: 1px solid rgba(139,92,246,0.22);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 1px 3px rgba(99,102,241,0.06);
+}
+
+.menu-item.active > .menu-title::before,
+.menu-title.active::before {
+  transform: translateY(-50%) scaleY(1);
+  opacity: 1;
+}
+
 .menu-item.active > .menu-title i:first-child,
 .menu-item.active > .menu-title svg:first-child,
 .menu-item.active > .menu-title .nav-icon,
 .menu-title.active i:first-child,
 .menu-title.active svg:first-child,
-.menu-title.active .nav-icon { opacity: 1; color: #7c3aed; }
+.menu-title.active .nav-icon {
+  opacity: 1;
+  color: #7c3aed;
+  transform: scale(1.08);
+}
+
+html.dark .menu-item.active > .menu-title,
+html.dark .menu-title.active {
+  background: linear-gradient(135deg, rgba(139,92,246,0.24), rgba(99,102,241,0.15)) !important;
+  color: #c4b5fd !important;
+  border: 1px solid rgba(139,92,246,0.32);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 1px 3px rgba(0,0,0,0.25);
+}
 
 html.dark .menu-item.active > .menu-title i:first-child,
 html.dark .menu-item.active > .menu-title svg:first-child,
 html.dark .menu-item.active > .menu-title .nav-icon,
 html.dark .menu-title.active i:first-child,
 html.dark .menu-title.active svg:first-child,
-html.dark .menu-title.active .nav-icon { opacity: 1; color: #a78bfa; }
+html.dark .menu-title.active .nav-icon {
+  opacity: 1;
+  color: #a78bfa;
+  transform: scale(1.08);
+}
 
 /* Chevron */
-.chevron-icon { transition: transform 0.25s ease; }
+.chevron-icon {
+  transition: transform 0.26s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease, color 0.2s ease;
+  will-change: transform;
+}
 
 /* ══════════════ SUBMENU ══════════════ */
 .submenu {
-  position: relative;
-  max-height: 0;
-  overflow: hidden;
+  display: grid;
+  grid-template-rows: 0fr;
   opacity: 0;
-  margin-left: 18px;
-  transition: max-height 0.28s cubic-bezier(.4,0,.2,1), opacity 0.22s ease;
-}
-.submenu.open { max-height: 580px; opacity: 1; }
-.submenu::before {
-  content: '';
-  position: absolute;
-  left: 8px;
-  top: 4px;
-  bottom: 4px;
-  width: 1px;
-  background: linear-gradient(180deg, rgba(139,92,246,0.35), rgba(99,102,241,0.12));
-}
-html.dark .submenu::before {
-  background: linear-gradient(180deg, rgba(139,92,246,0.45), rgba(99,102,241,0.18));
+  margin-left: 17px;
+  transition: grid-template-rows 0.26s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
 }
 
-.submenu a {
+.submenu.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.submenu-content {
+  overflow: hidden;
+  min-height: 0;
+  position: relative;
+  padding: 2px 0 4px;
+}
+
+/* Subtle continuous vertical connector tree line */
+.submenu-content::before {
+  content: '';
+  position: absolute;
+  left: 9px;
+  top: 6px;
+  bottom: 12px;
+  width: 1.5px;
+  border-radius: 1px;
+  background: linear-gradient(180deg, rgba(139,92,246,0.32) 0%, rgba(99,102,241,0.18) 70%, rgba(99,102,241,0.04) 100%);
+}
+
+html.dark .submenu-content::before {
+  background: linear-gradient(180deg, rgba(139,92,246,0.42) 0%, rgba(99,102,241,0.22) 70%, rgba(99,102,241,0.05) 100%);
+}
+
+.submenu a,
+.submenu .submenu-item {
   position: relative;
   display: flex;
   align-items: center;
-  min-height: 34px;
-  padding: 4px 8px 4px 22px;
-  font-size: 0.75rem;
+  min-height: 33px;
+  padding: 4px 10px 4px 24px;
+  font-size: 0.775rem;
   color: #64748b;
   border-radius: 7px;
   margin: 1px 0;
-  transition: background 0.18s ease, color 0.18s ease, padding-left 0.18s ease;
+  transition: color 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+              padding-left 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.14s ease;
+  border: 1px solid transparent;
+  -webkit-tap-highlight-color: transparent;
 }
-.submenu a::before {
+
+/* Small, clean circular marker dot aligned right on connector line */
+.submenu a::before,
+.submenu .submenu-item::before {
   content: '';
   position: absolute;
-  left: 5.5px;
+  left: 7.25px;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-50%) scale(1);
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: rgba(139,92,246,0.3);
-  transition: background 0.18s ease, box-shadow 0.18s ease;
+  background: #cbd5e1;
+  border: 1px solid #94a3b8;
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+              background-color 0.18s ease,
+              border-color 0.18s ease,
+              box-shadow 0.2s ease;
+  z-index: 2;
 }
+
+html.dark .submenu a::before,
+html.dark .submenu .submenu-item::before {
+  background: #334155;
+  border-color: #475569;
+}
+
+/* Hover state */
 .submenu a:hover,
-.submenu a.active {
-  color: #4c1d95;
-  background: rgba(139,92,246,0.07);
+.submenu .submenu-item:hover {
+  color: #4338ca;
+  background: rgba(99, 102, 241, 0.06);
   padding-left: 26px;
 }
+
 .submenu a:hover::before,
-.submenu a.active::before {
-  background: #7c3aed;
-  box-shadow: 0 0 0 2.5px rgba(139,92,246,0.12);
+.submenu .submenu-item:hover::before {
+  background: #818cf8;
+  border-color: #6366f1;
+  transform: translateY(-50%) scale(1.25);
+  box-shadow: 0 0 0 2.5px rgba(99, 102, 241, 0.16);
 }
 
-html.dark .submenu a {
-  color: #94a3b8;
-}
 html.dark .submenu a:hover,
-html.dark .submenu a.active {
-  color: #ddd6fe;
-  background: rgba(139,92,246,0.15);
-  padding-left: 26px;
-}
-html.dark .submenu a:hover::before,
-html.dark .submenu a.active::before {
-  background: #8b5cf6;
-  box-shadow: 0 0 0 2.5px rgba(139,92,246,0.22);
+html.dark .submenu .submenu-item:hover {
+  color: #e0e7ff;
+  background: rgba(139, 92, 246, 0.12);
 }
 
+html.dark .submenu a:hover::before,
+html.dark .submenu .submenu-item:hover::before {
+  background: #a5b4fc;
+  border-color: #818cf8;
+  box-shadow: 0 0 0 2.5px rgba(139, 92, 246, 0.24);
+}
+
+/* Active submenu state: light/tinted, distinguished from main items */
+.submenu a.active,
+.submenu .submenu-item.active {
+  color: #4f46e5;
+  font-weight: 600;
+  background: rgba(99, 102, 241, 0.08);
+  border-color: rgba(99, 102, 241, 0.16);
+  padding-left: 26px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.submenu a.active::before,
+.submenu .submenu-item.active::before {
+  background: #6366f1;
+  border-color: #4f46e5;
+  transform: translateY(-50%) scale(1.35);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.22);
+}
+
+html.dark .submenu a.active,
+html.dark .submenu .submenu-item.active {
+  color: #c7d2fe;
+  background: rgba(99, 102, 241, 0.16);
+  border-color: rgba(99, 102, 241, 0.28);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+html.dark .submenu a.active::before,
+html.dark .submenu .submenu-item.active::before {
+  background: #a5b4fc;
+  border-color: #818cf8;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.35);
+}
+
+/* Tap feedback */
+.submenu a:active,
+.submenu .submenu-item:active {
+  transform: scale(0.985);
+  background: rgba(99, 102, 241, 0.12);
+}
+
+html.dark .submenu a:active,
+html.dark .submenu .submenu-item:active {
+  background: rgba(99, 102, 241, 0.22);
+}
+
+/* Desktop sizing adjustments */
 @media (min-width: 1024px) {
   .submenu {
-    margin-left: 22px;
+    margin-left: 21px;
   }
-  .submenu::before {
-    left: 9px;
+  .submenu-content::before {
+    left: 10px;
     top: 6px;
-    bottom: 6px;
+    bottom: 14px;
   }
-  .submenu a {
-    min-height: 42px;
-    padding: 6px 10px 6px 26px;
+  .submenu a,
+  .submenu .submenu-item {
+    min-height: 38px;
+    padding: 5px 12px 5px 27px;
     font-size: 0.8125rem;
     border-radius: 8px;
+    margin: 1.5px 0;
   }
-  .submenu a::before {
-    left: 6.5px;
-    width: 6px;
-    height: 6px;
+  .submenu a::before,
+  .submenu .submenu-item::before {
+    left: 8px;
+    width: 5.5px;
+    height: 5.5px;
   }
   .submenu a:hover,
-  .submenu a.active {
+  .submenu a.active,
+  .submenu .submenu-item:hover,
+  .submenu .submenu-item.active {
     padding-left: 30px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .menu-title,
+  .menu-title::before,
+  .menu-title i:first-child,
+  .menu-title svg:first-child,
+  .menu-title .nav-icon,
+  .chevron-icon,
+  .submenu,
+  .submenu-content,
+  .submenu a,
+  .submenu a::before,
+  .submenu .submenu-item,
+  .submenu .submenu-item::before {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    transform: none !important;
   }
 }
 
